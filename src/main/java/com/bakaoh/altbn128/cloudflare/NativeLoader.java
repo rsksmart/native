@@ -13,88 +13,33 @@ import java.security.NoSuchAlgorithmException;
 
 public class NativeLoader {
 
-    private static synchronized boolean loadNativeLibrary(String path, String name) {
-        File libPath = new File(path, name);
-        if (libPath.exists()) {
-            try {
-                System.load(new File(path, name).getAbsolutePath());
-                return true;
-            } catch (UnsatisfiedLinkError e) {
-                System.err.println(e);
-                return false;
-            }
-
-        } else
-            return false;
-    }
-
-    private static boolean extractResourceFiles(String dbrNativeLibraryPath, String dbrNativeLibraryName,
-                                                String tempFolder) throws IOException {
-        String[] filenames = null;
-        if (Utils.isWindows()) {
-            filenames = new String[]{"libbn128.dll"};
-        } else if (Utils.isLinux()) {
-            filenames = new String[]{"libbn128.so"};
-        } else if (Utils.isMac()) {
-            filenames = new String[]{"libbn128.dylib"};
-        }
-
-        boolean ret = true;
-
-        for (String file : filenames) {
-            ret &= extractAndLoadLibraryFile(dbrNativeLibraryPath, file, tempFolder);
-        }
-
-        return ret;
-    }
-
     public static boolean load() throws Exception {
 
         // Load the os-dependent library from the jar file
-        String dbrNativeLibraryName = System.mapLibraryName("bn128");
-        String dbrNativeLibraryPath = "/com/bakaoh/altbn128/cloudflare/native";
+        String nativeLibraryName = System.mapLibraryName("bn128");
+        String nativeLibraryPath = "/com/bakaoh/altbn128/cloudflare/native";
         if (Utils.isWindows()) {
-            dbrNativeLibraryPath = dbrNativeLibraryPath + "/win";
+            nativeLibraryPath = nativeLibraryPath + "/win";
         } else if (Utils.isLinux()) {
-            dbrNativeLibraryPath = dbrNativeLibraryPath + "/linux";
+            nativeLibraryPath = nativeLibraryPath + "/linux";
         } else if (Utils.isMac()) {
-            dbrNativeLibraryPath = dbrNativeLibraryPath + "/macos";
+            nativeLibraryPath = nativeLibraryPath + "/macos";
         }
 
-        if (JniBn128.class.getResource(dbrNativeLibraryPath + "/" + dbrNativeLibraryName) == null) {
-            throw new Exception("Error loading native library: " + dbrNativeLibraryPath + "/" + dbrNativeLibraryName);
+        if (JniBn128.class.getResource(nativeLibraryPath + "/" + nativeLibraryName) == null) {
+            throw new Exception("Error loading native library: " + nativeLibraryPath + "/" + nativeLibraryName);
         }
 
         // Temporary library folder
         String tempFolder = new File(System.getProperty("java.io.tmpdir")).getAbsolutePath();
 
         // Extract resource files
-        return extractResourceFiles(dbrNativeLibraryPath, dbrNativeLibraryName, tempFolder);
+        return extractAndLoadLibraryFile(nativeLibraryPath, nativeLibraryName, tempFolder);
     }
 
-    static String md5sum(InputStream input) throws IOException {
-        BufferedInputStream in = new BufferedInputStream(input);
 
-        try {
-            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
-            DigestInputStream digestInputStream = new DigestInputStream(in, digest);
-            for (; digestInputStream.read() >= 0; ) {
-
-            }
-            ByteArrayOutputStream md5out = new ByteArrayOutputStream();
-            md5out.write(digest.digest());
-            return md5out.toString();
-        } catch (NoSuchAlgorithmException e) {
-            throw new IllegalStateException("MD5 algorithm is not available: " + e);
-        } finally {
-            in.close();
-        }
-    }
-
-    private static boolean extractAndLoadLibraryFile(String libFolderForCurrentOS, String libraryFileName,
-                                                     String targetFolder) {
+    private static boolean extractAndLoadLibraryFile(String libFolderForCurrentOS, String libraryFileName, String targetFolder) {
         String nativeLibraryFilePath = libFolderForCurrentOS + "/" + libraryFileName;
-
         String extractedLibFileName = libraryFileName;
         File extractedLibFile = new File(targetFolder, extractedLibFileName);
 
@@ -110,8 +55,7 @@ public class NativeLoader {
                     // remove old native library file
                     boolean deletionSucceeded = extractedLibFile.delete();
                     if (!deletionSucceeded) {
-                        throw new IOException(
-                                "failed to remove existing native library file: " + extractedLibFile.getAbsolutePath());
+                        throw new IOException("failed to remove existing native library file: " + extractedLibFile.getAbsolutePath());
                     }
                 }
             }
@@ -130,8 +74,7 @@ public class NativeLoader {
 
             if (!System.getProperty("os.name").contains("Windows")) {
                 try {
-                    Runtime.getRuntime().exec(new String[]{"chmod", "755", extractedLibFile.getAbsolutePath()})
-                            .waitFor();
+                    Runtime.getRuntime().exec(new String[]{"chmod", "755", extractedLibFile.getAbsolutePath()}).waitFor();
                 } catch (Throwable e) {
                 }
             }
@@ -141,6 +84,38 @@ public class NativeLoader {
             System.err.println(e.getMessage());
             return false;
         }
-
     }
+
+    private static synchronized boolean loadNativeLibrary(String path, String name) {
+        File libPath = new File(path, name);
+        if (libPath.exists()) {
+            try {
+                System.load(libPath.getAbsolutePath());
+                return true;
+            } catch (UnsatisfiedLinkError e) {
+                System.err.println(e);
+                return false;
+            }
+        }
+        return false;
+    }
+
+    private static String md5sum(InputStream input) throws IOException {
+        BufferedInputStream in = new BufferedInputStream(input);
+
+        try {
+            MessageDigest digest = java.security.MessageDigest.getInstance("MD5");
+            DigestInputStream digestInputStream = new DigestInputStream(in, digest);
+            for (; digestInputStream.read() >= 0; ) {
+            }
+            ByteArrayOutputStream md5out = new ByteArrayOutputStream();
+            md5out.write(digest.digest());
+            return md5out.toString();
+        } catch (NoSuchAlgorithmException e) {
+            throw new IllegalStateException("MD5 algorithm is not available: " + e);
+        } finally {
+            in.close();
+        }
+    }
+
 }

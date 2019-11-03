@@ -1,40 +1,55 @@
 package com.bakaoh.altbn128;
 
-import com.bakaoh.altbn128.current.ContractFactory;
 import org.openjdk.jmh.annotations.*;
 
-@State(Scope.Benchmark)
 public class BenchMark {
 
-    public PrecompiledContract.Factory factory;
-
-    @Setup(Level.Iteration)
-    public void setUp() {
-        factory = new ContractFactory();
+    @Fork(value = 1, warmups = 0)
+    @Benchmark
+    @BenchmarkMode(Mode.Throughput)
+    @Warmup(iterations = 1)
+    public void currentAdd() {
+        new com.bakaoh.altbn128.current.BN128Addition().execute(BenchMarkData.ADDITION_INPUT);
     }
 
     @Fork(value = 1, warmups = 0)
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @Warmup(iterations = 1)
-    public void addition() {
-        factory.newAddContract().execute(BenchMarkData.ADDITION_INPUT);
+    public void currentMul() {
+        new com.bakaoh.altbn128.current.BN128Multiplication().execute(BenchMarkData.MULTIPLICATION_INPUT);
     }
 
     @Fork(value = 1, warmups = 0)
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @Warmup(iterations = 1)
-    public void multiplication() {
-        factory.newMulContract().execute(BenchMarkData.MULTIPLICATION_INPUT);
+    public void currentPairing() {
+        new com.bakaoh.altbn128.current.BN128Pairing().execute(BenchMarkData.PAIRING_INPUT);
     }
 
     @Fork(value = 1, warmups = 0)
     @Benchmark
     @BenchmarkMode(Mode.Throughput)
     @Warmup(iterations = 1)
-    public void pairing() {
-        factory.newPairingContract().execute(BenchMarkData.PAIRING_INPUT);
+    public void cloudflareAdd() {
+        new com.bakaoh.altbn128.cloudflare.BN128Addition().execute(BenchMarkData.ADDITION_INPUT);
+    }
+
+    @Fork(value = 1, warmups = 0)
+    @Benchmark
+    @BenchmarkMode(Mode.Throughput)
+    @Warmup(iterations = 1)
+    public void cloudflareMul() {
+        new com.bakaoh.altbn128.cloudflare.BN128Multiplication().execute(BenchMarkData.MULTIPLICATION_INPUT);
+    }
+
+    @Fork(value = 1, warmups = 0)
+    @Benchmark
+    @BenchmarkMode(Mode.Throughput)
+    @Warmup(iterations = 1)
+    public void cloudflarePairing() {
+        new com.bakaoh.altbn128.cloudflare.BN128Pairing().execute(BenchMarkData.PAIRING_INPUT);
     }
 
 }
