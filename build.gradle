@@ -1,7 +1,17 @@
 group 'com.bakaoh'
-version '1.0-SNAPSHOT'
+version '1.0.0'
 
+buildscript {
+    repositories {
+        jcenter()
+    }
+    dependencies {
+        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
+    }
+}
 apply plugin: 'java'
+apply plugin: 'maven-publish'
+apply plugin: 'com.jfrog.bintray'
 
 sourceCompatibility = 1.8
 
@@ -27,4 +37,74 @@ task jmh(type: JavaExec, dependsOn: jmhClasses) {
     systemProperty "java.library.path", "/home/bakaking/go/src/github.com/bakaoh/bn128"
     main = 'org.openjdk.jmh.Main'
     classpath = sourceSets.jmh.compileClasspath + sourceSets.jmh.runtimeClasspath
+}
+
+task javadocJar(type: Jar, dependsOn: javadoc) {
+    classifier = 'javadoc'
+    from 'build/docs/javadoc'
+}
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allSource
+    classifier = 'sources'
+}
+
+bintray {
+    user = project.hasProperty('bintrayUser') ? project.bintrayUser : System.getenv('BINTRAY_USER')
+    key = project.hasProperty('bintrayKey') ? project.bintrayKey : System.getenv('BINTRAY_KEY')
+    publications = ['mavenJava']
+    pkg {
+        repo = 'maven'
+        name = 'altbn128'
+        licenses = ['Apache-2.0']
+        vcsUrl = 'https://github.com/bakaoh/cloudflare-altbn128-jni.git'
+        version {
+            name = '1.0.0'
+            desc = 'Cloudflare Bn128 Jni 1.0.0'
+            released  = new Date()
+            vcsTag = '1.0.0'
+        }
+    }
+}
+
+// Create the pom configuration:
+def pomConfig = {
+    licenses {
+        license {
+            name "The Apache Software License, Version 2.0"
+            url "http://www.apache.org/licenses/LICENSE-2.0.txt"
+            distribution "repo"
+        }
+    }
+    developers {
+        developer {
+            id "bakaoh"
+            name "bakaoh"
+            email "tatattai@gmail.com"
+        }
+    }
+    scm {
+        url "https://github.com/bakaoh/cloudflare-altbn128-jni"
+    }
+}
+
+// Create the publication with the pom configuration:
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            groupId 'com.bakaoh'
+            artifactId 'altbn128'
+            version '1.0'
+            pom.withXml {
+                def root = asNode()
+                root.appendNode('description', 'Cloudflare Altbn128 Jni')
+                root.appendNode('name', 'cloudflare-altbn128-jni')
+                root.appendNode('url', 'https://github.com/bakaoh/cloudflare-altbn128-jni')
+                root.children().last() + pomConfig
+            }
+        }
+    }
 }
