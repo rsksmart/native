@@ -18,6 +18,7 @@
 
 package com.bakaoh.altbn128.current;
 
+import com.bakaoh.altbn128.PrecompiledContract;
 import org.ethereum.crypto.altbn128.BN128;
 import org.ethereum.crypto.altbn128.BN128Fp;
 import org.ethereum.crypto.altbn128.Fp;

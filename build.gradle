@@ -24,7 +24,6 @@ dependencies {
 }
 
 task jmh(type: JavaExec, dependsOn: jmhClasses) {
-    systemProperty "java.library.path", "/home/bakaking/go/src/github.com/bakaoh/bn128"
     main = 'org.openjdk.jmh.Main'
     classpath = sourceSets.jmh.compileClasspath + sourceSets.jmh.runtimeClasspath
 }

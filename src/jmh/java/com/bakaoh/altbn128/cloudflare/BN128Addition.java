@@ -1,5 +1,7 @@
 package com.bakaoh.altbn128.cloudflare;
 
+import com.bakaoh.altbn128.PrecompiledContract;
+
 import static com.bakaoh.altbn128.current.ByteUtil.*;
 
 /**

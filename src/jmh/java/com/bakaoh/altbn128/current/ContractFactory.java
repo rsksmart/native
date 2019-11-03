@@ -1,5 +1,7 @@
 package com.bakaoh.altbn128.current;
 
+import com.bakaoh.altbn128.PrecompiledContract;
+
 /**
  * Created by bakaking on 29/10/2019.
  */

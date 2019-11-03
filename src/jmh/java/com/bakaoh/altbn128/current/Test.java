@@ -1,5 +1,7 @@
 package com.bakaoh.altbn128.current;
 
+import com.bakaoh.altbn128.BenchMarkData;
+
 import java.util.Arrays;
 
 /**

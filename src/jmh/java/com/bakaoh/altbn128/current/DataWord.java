@@ -18,6 +18,8 @@ package com.bakaoh.altbn128.current;
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 
+import com.bakaoh.altbn128.BenchMarkData;
+
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
