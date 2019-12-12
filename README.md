@@ -20,3 +20,12 @@ Add dependency
 ```
 compile 'com.bakaoh:altbn128:1.0'
 ```
+
+### Build
+
+```
+$ git clone https://github.com/bakaoh/cloudflare-altbn128-jni
+$ cd cloudflare-altbn128-jni
+$ cd src/jni && make macos
+$ cd ../.. && ./gradlew jar
+```

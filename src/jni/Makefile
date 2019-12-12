@@ -1,15 +1,19 @@
 CGO_CFLAGS = "-I$(JAVA_HOME)/include -I$(JAVA_HOME)/include/linux"
-ARCHIVE_FILE = libbn128.a
-SHARED_FILE = libbn128.so
-
+NATIVE_PATH = "../main/resources/com/bakaoh/altbn128/cloudflare/native"
 .PHONY: clean build test
 
-build:
-	CGO_CFLAGS=$(CGO_CFLAGS) go build -buildmode=c-archive -o $(ARCHIVE_FILE) precompile.go
-	CGO_CFLAGS=$(CGO_CFLAGS) go build -buildmode=c-shared -o $(SHARED_FILE) precompile.go
+linux:
+	CGO_CFLAGS=$(CGO_CFLAGS) go build -buildmode=c-shared -o libbn128.so precompile.go
+	mkdir -p $(NATIVE_PATH)/linux
+	cp libbn128.so $(NATIVE_PATH)/linux/libbn128.so
+
+macos:
+	CGO_CFLAGS=$(CGO_CFLAGS) go build -buildmode=c-shared -o libbn128.dylib precompile.go
+	mkdir -p $(NATIVE_PATH)/macos
+	cp libbn128.dylib $(NATIVE_PATH)/macos/libbn128.dylib
 
 test:
 	CGO_CFLAGS=$(CGO_CFLAGS) go test -bench=. ./...
 
 clean:
-	rm -f $(ARCHIVE_FILE) $(SHARED_FILE)
+	rm -f libbn128.so libbn128.dylib
