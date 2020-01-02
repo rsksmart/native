@@ -17,7 +17,7 @@ import (
 	"math/big"
 	"unsafe"
 
-	"github.com/clearmatics/bn256"
+	bn256 "./bn256"
 )
 
 //export Java_co_rsk_altbn128_cloudflare_JniBn128_add
