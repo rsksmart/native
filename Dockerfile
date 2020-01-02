@@ -8,11 +8,8 @@ ENV PATH=$GOBIN:$PATH
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV CGO_CFLAGS="-I$JAVA_HOME/include -I$JAVA_HOME/include/linux"
 
-RUN apt-get update -y && \
-    apt-get install -y git curl openjdk-8-jdk=8u232-b09-0ubuntu1~18.04.1 build-essential && \
-    rm -rf /var/lib/apt/lists/* && \
-    apt-get autoremove -y && \
-    apt-get clean
+RUN apt-get update && \
+	apt-get install -y -o APT::Install-Suggests="false" git curl openjdk-8-jdk=8u232-b09-0ubuntu1~18.04.1 build-essential=12.4ubuntu1
 
 WORKDIR /code/bn256
 ADD src/jni/ ./
@@ -25,7 +22,5 @@ RUN sha256sum -c shasum.txt
 RUN tar -xvf $GOLANG
 RUN mkdir $GOROOT && mv go /
 
-RUN go get && make clean && make linux && make macos
-RUN sha256sum libbn128.dylib && \
-	sha256sum libbn128.so
-
+RUN go get && make clean && make linux
+RUN sha256sum libbn128.so
