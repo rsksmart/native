@@ -7,8 +7,9 @@ buildscript {
     }
 }
 
-apply plugin: 'maven-publish'
 apply plugin: 'java'
+apply plugin: 'maven'
+
 
 sourceCompatibility = 1.8
 
@@ -33,4 +34,35 @@ dependencies {
 task jmh(type: JavaExec, dependsOn: jmhClasses) {
     main = 'org.openjdk.jmh.Main'
     classpath = sourceSets.jmh.compileClasspath + sourceSets.jmh.runtimeClasspath
+}
+
+task generatePom(dependsOn: jar) {
+    def jarName = jar.outputs.files.singleFile.name
+    def pomFile = "${project.buildDir}/${libsDirName}/${jarName.take(jarName.lastIndexOf('.'))}.pom"
+    ext.file = new File(pomFile)
+    doLast {
+        pom {
+            project {
+                groupId project.group
+                artifactId project.name
+                version project.version
+
+                licenses {
+                    license {
+                        name 'GNU General Public License (GPL) version 3.0'
+                        url 'http://www.gnu.org/licenses/gpl-3.0.txt'
+                        distribution 'repo'
+                    }
+                }
+            }
+        }.writeTo(pomFile)
+    }
+}
+
+artifacts {
+    archives jar
+    archives(generatePom.file) {
+        type 'text'
+        builtBy generatePom
+    }
 }
