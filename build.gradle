@@ -40,6 +40,16 @@ task jmh(type: JavaExec, dependsOn: jmhClasses) {
     classpath = sourceSets.jmh.compileClasspath + sourceSets.jmh.runtimeClasspath
 }
 
+task sourcesJar(type: Jar, dependsOn: classes) {
+    classifier = 'sources'
+    from sourceSets.main.allSource
+}
+
+task javadocJar(type: Jar) {
+    classifier = "javadoc"
+    from javadoc
+}
+
 task generatePom(dependsOn: jar) {
     def jarName = jar.outputs.files.singleFile.name
     def pomFile = "${project.buildDir}/${libsDirName}/${jarName.take(jarName.lastIndexOf('.'))}.pom"
@@ -86,6 +96,8 @@ artifacts {
         type 'text'
         builtBy generatePom
     }
+    archives sourcesJar
+    archives javadocJar
 }
 
 tasks.withType(Jar) {
