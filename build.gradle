@@ -29,16 +29,18 @@ sourceSets {
     }
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.11'
-    jmhCompile 'org.openjdk.jmh:jmh-core:1.21'
-    jmhCompile 'org.openjdk.jmh:jmh-generator-annprocess:1.21'
-}
-
 task jmh(type: JavaExec, dependsOn: jmhClasses) {
     main = 'org.openjdk.jmh.Main'
     classpath = sourceSets.jmh.compileClasspath + sourceSets.jmh.runtimeClasspath
 }
+
+dependencies {
+    testCompile group: 'junit', name: 'junit', version: '4.11'
+    jmhCompile 'org.openjdk.jmh:jmh-core:1.22'
+    jmhAnnotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess:1.22'
+}
+
+
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
