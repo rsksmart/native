@@ -114,7 +114,7 @@ JNIEXPORT jint JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ec_1seckey_1v
 /*
  * Class:     org_bitcoin_NativeSecp256k1
  * Method:    secp256k1_ec_pubkey_create
- * Signature: (Ljava/nio/ByteBuffer;J)[[B
+ * Signature: (Ljava/nio/ByteBuffer;JI)[[B
  */
 JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ec_1pubkey_1create
   (JNIEnv *, jclass, jobject, jlong, jint);
@@ -146,7 +146,7 @@ JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ecdh
 /*
  * Class:     org_bitcoin_NativeSecp256k1
  * Method:    secp256k1_ecdsa_recover
- * Signature: (Ljava/nio/ByteBuffer;JI)[[B
+ * Signature: (Ljava/nio/ByteBuffer;JII)[[B
  */
 JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ecdsa_1recover
   (JNIEnv *, jclass, jobject, jlong, jint, jint);

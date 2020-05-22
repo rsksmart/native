@@ -7,3 +7,4 @@ build/
 *.gcda
 *.trs
 *.log
+src/main/resources/org/

@@ -44,9 +44,7 @@ Build for Windows
 ## Testing
   
 ```bash
-./autogen.sh
-./configure --enable-experimental --enable-module_ecdh --enable-module-recovery
-make check
+./test
 ```
     
 ## Disclaimer

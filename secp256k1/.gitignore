@@ -1,6 +1,8 @@
 build/
 jni/.deps
 jni/.libs
+jni/org_bitcoin_NativeSecp256k1.h
+jni/org_bitcoin_Secp256k1Context.h
 
 bench_inv
 bench_ecdh

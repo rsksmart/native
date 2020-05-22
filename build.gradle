@@ -31,19 +31,6 @@ sourceSets {
     }
 }
 
-task generateJniHeaders(type: JavaCompile) {
-    classpath = sourceSets.main.compileClasspath
-    destinationDir file("${buildDir}/generated/jni")
-    source = sourceSets.main.java
-    options.compilerArgs += [
-            '-h', file("${buildDir}/generated/jni"),
-            '-d', file("${buildDir}/generated/jni-tmp")
-    ]
-    doLast {
-        delete file("${buildDir}/generated/jni-tmp")
-    }
-}
-
 task jmh(type: JavaExec, dependsOn: jmhClasses) {
     main = 'org.openjdk.jmh.Main'
     classpath = sourceSets.jmh.compileClasspath + sourceSets.jmh.runtimeClasspath
@@ -123,3 +110,24 @@ tasks.withType(Jar) {
     }
 }
 
+// Building Libraries Tasks
+
+task generateJniHeaders(type: JavaCompile) {
+    classpath = sourceSets.main.compileClasspath
+    destinationDir file("${buildDir}/generated/jni")
+    source = sourceSets.main.java
+    options.compilerArgs += [
+            '-h', file("${buildDir}/generated/jni"),
+            '-d', file("${buildDir}/generated/jni-tmp")
+    ]
+    doLast {
+        delete file("${buildDir}/generated/jni-tmp")
+    }
+}
+
+task buildSecp256k1(type:Exec) {
+    workingDir 'update-scripts'
+    commandLine './secp256k1.sh'
+}
+
+// Todo implement gradle repo
