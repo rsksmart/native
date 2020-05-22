@@ -14,7 +14,6 @@ buildscript {
 apply plugin: 'java'
 apply plugin: 'maven'
 
-
 sourceCompatibility = 1.8
 
 repositories {
@@ -22,6 +21,9 @@ repositories {
 }
 
 sourceSets {
+    test {
+        java.srcDirs = ['src/test/java']
+    }
     jmh {
         java.srcDirs = ['src/jmh/java']
         resources.srcDirs = ['src/jmh/resources']
@@ -35,12 +37,11 @@ task jmh(type: JavaExec, dependsOn: jmhClasses) {
 }
 
 dependencies {
+    testCompile group: 'com.google.guava', name: 'guava-testlib', version: '18.0'
     testCompile group: 'junit', name: 'junit', version: '4.11'
     jmhCompile 'org.openjdk.jmh:jmh-core:1.22'
     jmhAnnotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess:1.22'
 }
-
-
 
 task sourcesJar(type: Jar, dependsOn: classes) {
     classifier = 'sources'
@@ -62,7 +63,6 @@ task generatePom(dependsOn: jar) {
                 groupId project.group
                 artifactId project.name
                 version project.version
-
                 licenses {
                     license {
                         name 'GNU General Public License (GPL) version 3.0'
@@ -110,3 +110,22 @@ tasks.withType(Jar) {
     }
 }
 
+// Building Libraries Tasks
+
+task generateJniHeaders(type: JavaCompile) {
+    classpath = sourceSets.main.compileClasspath
+    destinationDir file("${buildDir}/generated/jni")
+    source = sourceSets.main.java
+    options.compilerArgs += [
+            '-h', file("${buildDir}/generated/jni"),
+            '-d', file("${buildDir}/generated/jni-tmp")
+    ]
+    doLast {
+        delete file("${buildDir}/generated/jni-tmp")
+    }
+}
+
+task buildSecp256k1(type:Exec) {
+    workingDir 'build-scripts'
+    commandLine './secp256k1.sh'
+}
