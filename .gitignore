@@ -1,3 +1,9 @@
 build/
 .gradle/
 .idea/
+*.iml
+.DS_Store
+*.gcno
+*.gcda
+*.trs
+*.log
