@@ -9,10 +9,10 @@ echo 'Generating JNI Headers'
 cd ../ &&
 gradle generateJniHeaders &&
 cd secp256k1 &&
-mv "$GENERATED_HEADERS_DIRECTORY/org_bitcoin_NativeSecp256k1.h" "jni/" &&
-mv "$GENERATED_HEADERS_DIRECTORY/org_bitcoin_Secp256k1Context.h" "jni/" &&
+cp "$GENERATED_HEADERS_DIRECTORY/org_bitcoin_NativeSecp256k1.h" "jni/" &&
+cp "$GENERATED_HEADERS_DIRECTORY/org_bitcoin_Secp256k1Context.h" "jni/" &&
 ./build.sh &&
-cd ../update-scripts
+cd ../build-scripts
 
 echo 'Removing old secp256k1 binaries'
 rm -rf "$NATIVE_LIBRARIES_DIRECTORY"
@@ -24,6 +24,8 @@ echo 'Getting new binaires from secp256k1 project'
 cp -r "$SECP256K1_BUILD_DIRECTORY/Linux" $NATIVE_LIBRARIES_DIRECTORY
 cp -r "$SECP256K1_BUILD_DIRECTORY/Mac" $NATIVE_LIBRARIES_DIRECTORY
 cp -r "$SECP256K1_BUILD_DIRECTORY/Windows" $NATIVE_LIBRARIES_DIRECTORY
+
+echo '---------------------------------------'
 
 cd ../secp256k1 &&
 echo 'Running secp256k1 tests' &&

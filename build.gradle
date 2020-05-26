@@ -126,8 +126,6 @@ task generateJniHeaders(type: JavaCompile) {
 }
 
 task buildSecp256k1(type:Exec) {
-    workingDir 'update-scripts'
+    workingDir 'build-scripts'
     commandLine './secp256k1.sh'
 }
-
-// Todo implement gradle repo
