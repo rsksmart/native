@@ -9,7 +9,8 @@ ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV CGO_CFLAGS="-I$JAVA_HOME/include -I$JAVA_HOME/include/linux"
 
 RUN apt-get update && \
-	apt-get install -y -o APT::Install-Suggests="false" git curl openjdk-8-jdk=8u232-b09-0ubuntu1~18.04.1 build-essential=12.4ubuntu1
+	apt-get install -y -o APT::Install-Suggests="false" git curl openjdk-8-jdk build-essential=12.4ubuntu1
+RUN apt-get install -y -o APT::Install-Suggests="true" autoconf
 
 WORKDIR /code/bn256
 ADD src/jni/ ./
@@ -24,3 +25,14 @@ RUN mkdir $GOROOT && mv go /
 
 RUN go get && make clean && make linux
 RUN sha256sum libbn128.so
+
+WORKDIR /code/secp256k1
+ADD secp256k1/ ./
+RUN export JAVA_HOME=$(pwd)/src/java/jniheaders
+RUN echo $JAVA_HOME && ./autogen.sh &&\
+    ./configure --enable-experimental --enable-module_ecdh --enable-module-recovery --enable-jni &&\
+    make clean &&\
+    make
+RUN sha256sum .libs/libsecp256k1.so.0.0.0
+
+
