@@ -6,6 +6,7 @@ In this project you'll find all the native libraries used in rskj.
 
 - altbn128
 - [secp256k1](secp256k1/README.md)
+- [keccak256](keccak256/README.md)
 
 ## Build
 
@@ -23,3 +24,4 @@ Output at `build/libs`
 
 There are gradle tasks to build each library.
 - buildSecp256k1
+
