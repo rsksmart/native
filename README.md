@@ -9,17 +9,17 @@ In this project you'll find all the native libraries used in rskj.
 
 ## Build
 
-In order to build you'll need to have installed
+Requirements 
 - Docker
 - Gradle CLI
+- Autoconf, Autotool & Libtool
 
-Then run
-1. `buildSecp256k1` gradle task
-2. `jar` gradle task
+```
+./gradlew buildProject
+```
 
 Output at `build/libs`
 
 ## Build a Specific Library
 
-There are gradle tasks to build each library.
-- buildSecp256k1
+- Secp256k1: `./gradlew buildSecp256k1Cross`

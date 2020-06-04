@@ -1,3 +1,5 @@
+#!/bin/bash
+
 rm -rf build/
 rm -fr jni/.deps
 rm -fr jni/.libs
