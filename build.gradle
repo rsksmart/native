@@ -103,10 +103,27 @@ artifacts {
     archives javadocJar
 }
 
+<<<<<<< HEAD
 task buildProject {
     dependsOn 'basicBuildTasks'
     dependsOn 'buildSecp256k1Cross'
     finalizedBy 'build'
+=======
+task buildProject(group: 'build', description: 'builds libraries for supported OSs and packages them into productive jar') {
+    dependsOn clean
+    dependsOn 'generateJniHeaders'
+    dependsOn 'replaceJniHeaders'
+    dependsOn 'buildSecp256k1Linux'
+    finalizedBy 'jar'
+}
+
+task buildProjectExperimental(group: 'build', description: 'same as buildProject but uses experimental builds for each library instead') {
+    dependsOn clean
+    dependsOn 'generateJniHeaders'
+    dependsOn 'replaceJniHeaders'
+    dependsOn 'buildSecp256k1Experimental'
+    finalizedBy 'jar'
+>>>>>>> 976c66d... moving mac and windows secp256k1 to expermiental build
 }
 
 // Enabling reproducibility
@@ -119,31 +136,65 @@ tasks.withType(Jar) {
     }
 }
 
-task buildSecp256k1Cross(group: 'Build Library') {
+//Secp256k1 building tasks
+
+task buildSecp256k1Linux(group: 'secp256k1 building', description: 'builds secp256k1 library for linux and runs tests') {
+    dependsOn 'cleanSecp256k1'
     doLast {
-        delete 'src/main/resources/org/bitcoin/native/'
         exec {
             workingDir 'secp256k1'
-            commandLine './build.sh'
+            commandLine './build_linux.sh'
         }
         exec {
             workingDir 'secp256k1'
             commandLine './test.sh'
         }
         copy {
-            from 'secp256k1/build/Linux/x86_64'
+            from 'secp256k1/.libs/'
+            include 'libsecp256k1.so.0.0.0'
+            into 'src/main/resources/org/bitcoin/native/Linux/x86_64/'
+            rename 'libsecp256k1.so.0.0.0', 'libsecp256k1.so'
+        }
+    }
+}
+
+task buildSecp256k1CurrentOS(group: 'secp256k1 building', description: 'builds secp256k1 library for current OS (helpful for development)') {
+    dependsOn 'cleanSecp256k1'
+    doLast {
+        exec {
+            workingDir 'secp256k1'
+            commandLine './autogen.sh'
+        }
+        exec {
+            workingDir 'secp256k1'
+            commandLine './configure',
+                    '--enable-experimental',
+                    '--enable-module_ecdh',
+                    '--enable-module-recovery',
+                    '--enable-jni'
+        }
+        exec {
+            workingDir 'secp256k1'
+            commandLine 'make', 'clean'
+        }
+        exec {
+            workingDir 'secp256k1'
+            commandLine 'make'
+        }
+        copy {
+            from 'secp256k1/.libs'
             include 'libsecp256k1.so.0.0.0'
             into 'src/main/resources/org/bitcoin/native/Linux/x86_64/'
             rename 'libsecp256k1.so.0.0.0', 'libsecp256k1.so'
         }
         copy {
-            from 'secp256k1/build/Mac/x86_64/'
+            from 'secp256k1/.libs'
             include 'libsecp256k1.0.dylib'
             into 'src/main/resources/org/bitcoin/native/Mac/x86_64/'
             rename 'libsecp256k1.0.dylib', 'libsecp256k1.jnilib'
         }
         copy {
-            from 'secp256k1/build/Windows/x86_64/'
+            from 'secp256k1/.libs'
             include 'libsecp256k1-0.dll'
             into 'src/main/resources/org/bitcoin/native/Windows/x86_64/'
             rename 'libsecp256k1-0.dll', 'secp256k1.dll'
@@ -151,15 +202,42 @@ task buildSecp256k1Cross(group: 'Build Library') {
     }
 }
 
-// Aux
-
-task basicBuildTasks(group: 'Other') {
-    dependsOn clean
-    dependsOn 'generateJniHeaders'
-    dependsOn 'replaceJniHeaders'
+task buildSecp256k1Experimental(group: 'secp256k1 building', description: 'builds secp256k1 for Linux, Mac and Windows (only linux library supports reproducibility)') {
+    dependsOn 'buildSecp256k1Linux'
+    doLast {
+        exec {
+            workingDir 'secp256k1'
+            commandLine './build_mac.sh'
+        }
+        copy {
+            from 'secp256k1/.libs/'
+            include 'libsecp256k1.0.dylib'
+            into 'src/main/resources/org/bitcoin/native/Mac/x86_64/'
+            rename 'libsecp256k1.0.dylib', 'libsecp256k1.jnilib'
+        }
+        exec {
+            workingDir 'secp256k1'
+            commandLine './build_win.sh'
+        }
+        copy {
+            from 'secp256k1/.libs/'
+            include 'libsecp256k1-0.dll'
+            into 'src/main/resources/org/bitcoin/native/Windows/x86_64/'
+            rename 'libsecp256k1-0.dll', 'secp256k1.dll'
+        }
+    }
 }
 
-task generateJniHeaders(type: JavaCompile) {
+task cleanSecp256k1(group: 'secp256k1 building', description: 'removes libraries from main/resources folder') {
+    doLast {
+        delete 'src/main/resources/org/bitcoin/native/'
+        delete 'secp256k1/.libs'
+    }
+}
+
+// Aux
+
+task generateJniHeaders(type: JavaCompile, description: 'generates JNI headers (.h) by java sources') {
     doFirst {
         exec {
             commandLine "mkdir", "-p", "build/generated/jni-tmp"
@@ -177,7 +255,7 @@ task generateJniHeaders(type: JavaCompile) {
     }
 }
 
-task replaceJniHeaders(group: 'Other', description: 'Replaces JNI old headers with generated headers') {
+task replaceJniHeaders(group: 'Other', description: 'Replaces JNI old headers with generated headers (for each library)') {
     copy {
         from 'build/generated/jni/org_bitcoin_NativeSecp256k1.h'
         into 'secp256k1/jni/'
