@@ -103,18 +103,12 @@ artifacts {
     archives javadocJar
 }
 
-<<<<<<< HEAD
-task buildProject {
-    dependsOn 'basicBuildTasks'
-    dependsOn 'buildSecp256k1Cross'
-    finalizedBy 'build'
-=======
 task buildProject(group: 'build', description: 'builds libraries for supported OSs and packages them into productive jar') {
     dependsOn clean
     dependsOn 'generateJniHeaders'
     dependsOn 'replaceJniHeaders'
     dependsOn 'buildSecp256k1Linux'
-    finalizedBy 'jar'
+    finalizedBy 'generatePom'
 }
 
 task buildProjectExperimental(group: 'build', description: 'same as buildProject but uses experimental builds for each library instead') {
@@ -122,8 +116,7 @@ task buildProjectExperimental(group: 'build', description: 'same as buildProject
     dependsOn 'generateJniHeaders'
     dependsOn 'replaceJniHeaders'
     dependsOn 'buildSecp256k1Experimental'
-    finalizedBy 'jar'
->>>>>>> 976c66d... moving mac and windows secp256k1 to expermiental build
+    finalizedBy 'generatePom'
 }
 
 // Enabling reproducibility
@@ -264,66 +257,6 @@ task replaceJniHeaders(group: 'Other', description: 'Replaces JNI old headers wi
         from 'build/generated/jni/org_bitcoin_Secp256k1Context.h'
         into 'secp256k1/jni/'
     }
-}
-
-
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
-task javadocJar(type: Jar) {
-    classifier = "javadoc"
-    from javadoc
-}
-
-task generatePom(dependsOn: jar) {
-    def jarName = jar.outputs.files.singleFile.name
-    def pomFile = "${project.buildDir}/${libsDirName}/${jarName.take(jarName.lastIndexOf('.'))}.pom"
-    ext.file = new File(pomFile)
-    doLast {
-        pom {
-            project {
-                groupId project.group
-                artifactId project.name
-                version project.version
-                licenses {
-                    license {
-                        name 'GNU General Public License (GPL) version 3.0'
-                        url 'http://www.gnu.org/licenses/gpl-3.0.txt'
-                        distribution 'repo'
-                    }
-                }
-            }
-        }.writeTo(pomFile)
-    }
-}
-
-def stripJar(File originalFile) {
-    def constantTimeForZipEntries = new GregorianCalendar(1980, Calendar.FEBRUARY, 1, 0, 0, 0).timeInMillis
-    def reproducibleFile = File.createTempFile("temp", ".tmp")
-    reproducibleFile.withOutputStream { fout ->
-        def out = new JarOutputStream(fout)
-        def jf = new JarFile(originalFile)
-        jf.entries().unique {it.name}.sort {it.name}.each {
-            def copy = new JarEntry(it.name)
-            copy.time = constantTimeForZipEntries
-            out.putNextEntry(copy)
-            out << jf.getInputStream(it)
-        }
-        out.finish()
-    }
-    reproducibleFile.renameTo originalFile
-}
-
-task jmh(type: JavaExec, dependsOn: jmhClasses) {
-    main = 'org.openjdk.jmh.Main'
-    classpath = sourceSets.jmh.compileClasspath + sourceSets.jmh.runtimeClasspath
-}
-
-task buildSecp256k1(type:Exec) {
-    workingDir 'build-scripts'
-    commandLine './secp256k1.sh'
 }
 
 // Test Tasks
