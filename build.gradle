@@ -104,19 +104,17 @@ artifacts {
 }
 
 task buildProject(group: 'build', description: 'builds libraries for supported OSs and packages them into productive jar') {
-    dependsOn clean
     dependsOn 'generateJniHeaders'
     dependsOn 'replaceJniHeaders'
-    dependsOn 'buildSecp256k1Linux'
-    finalizedBy 'generatePom'
+    dependsOn 'buildSecp256k1CurrentOS'
+    finalizedBy 'build'
 }
 
 task buildProjectExperimental(group: 'build', description: 'same as buildProject but uses experimental builds for each library instead') {
-    dependsOn clean
     dependsOn 'generateJniHeaders'
     dependsOn 'replaceJniHeaders'
     dependsOn 'buildSecp256k1Experimental'
-    finalizedBy 'generatePom'
+    finalizedBy 'build'
 }
 
 // Enabling reproducibility
@@ -129,27 +127,7 @@ tasks.withType(Jar) {
     }
 }
 
-//Secp256k1 building tasks
-
-task buildSecp256k1Linux(group: 'secp256k1 building', description: 'builds secp256k1 library for linux and runs tests') {
-    dependsOn 'cleanSecp256k1'
-    doLast {
-        exec {
-            workingDir 'secp256k1'
-            commandLine './build_linux.sh'
-        }
-        exec {
-            workingDir 'secp256k1'
-            commandLine './test.sh'
-        }
-        copy {
-            from 'secp256k1/.libs/'
-            include 'libsecp256k1.so.0.0.0'
-            into 'src/main/resources/org/bitcoin/native/Linux/x86_64/'
-            rename 'libsecp256k1.so.0.0.0', 'libsecp256k1.so'
-        }
-    }
-}
+// Secp256k1 building tasks
 
 task buildSecp256k1CurrentOS(group: 'secp256k1 building', description: 'builds secp256k1 library for current OS (helpful for development)') {
     dependsOn 'cleanSecp256k1'
@@ -191,6 +169,26 @@ task buildSecp256k1CurrentOS(group: 'secp256k1 building', description: 'builds s
             include 'libsecp256k1-0.dll'
             into 'src/main/resources/org/bitcoin/native/Windows/x86_64/'
             rename 'libsecp256k1-0.dll', 'secp256k1.dll'
+        }
+    }
+}
+
+task buildSecp256k1Linux(group: 'secp256k1 building', description: 'builds secp256k1 library for linux and runs tests') {
+    dependsOn 'cleanSecp256k1'
+    doLast {
+        exec {
+            workingDir 'secp256k1'
+            commandLine './build_linux.sh'
+        }
+        exec {
+            workingDir 'secp256k1'
+            commandLine './test.sh'
+        }
+        copy {
+            from 'secp256k1/.libs/'
+            include 'libsecp256k1.so.0.0.0'
+            into 'src/main/resources/org/bitcoin/native/Linux/x86_64/'
+            rename 'libsecp256k1.so.0.0.0', 'libsecp256k1.so'
         }
     }
 }
@@ -265,4 +263,3 @@ task testSecp256k1(type: Exec) {
     workingDir 'secp256k1'
     commandLine './test.sh'
 }
-
