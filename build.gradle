@@ -106,6 +106,7 @@ artifacts {
 task buildProject(group: 'build', description: 'builds libraries for supported OSs and packages them into productive jar') {
     dependsOn 'generateJniHeaders'
     dependsOn 'replaceJniHeaders'
+    dependsOn 'buildAltbn128'
     dependsOn 'buildSecp256k1CurrentOS'
     finalizedBy 'build'
 }
@@ -113,6 +114,7 @@ task buildProject(group: 'build', description: 'builds libraries for supported O
 task buildProjectExperimental(group: 'build', description: 'same as buildProject but uses experimental builds for each library instead') {
     dependsOn 'generateJniHeaders'
     dependsOn 'replaceJniHeaders'
+    dependsOn 'buildAltbn128'
     dependsOn 'buildSecp256k1Experimental'
     finalizedBy 'build'
 }
@@ -124,6 +126,22 @@ tasks.withType(Jar) {
     reproducibleFileOrder = true
     doLast {
         stripJar(outputs.files.singleFile)
+    }
+}
+
+// Altbn128 building tasks
+
+task buildAltbn128(group: 'altbn128 build', description: 'builds altbn128 library with system go') {
+    doLast {
+        exec {
+            workingDir 'altbn128'
+            commandLine './buildAltbn128.sh'
+        }
+        delete 'src/main/resources/co/rsk/altbn128/cloudflare/native/linux/libbn128.so'
+        copy {
+            from 'altbn128/libbn128.so'
+            into 'src/main/resources/co/rsk/altbn128/cloudflare/native/linux/'
+        }
     }
 }
 

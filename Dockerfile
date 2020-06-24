@@ -3,10 +3,6 @@ FROM ubuntu:18.04
 # CUSTOM VARIABLES
 ENV GOCUSTOM=/usr/local
 ENV GOLANG=go1.13.5.linux-amd64.tar.gz
-ENV ALTBN128_LINUX_RESOURCES=src/main/resources/co/rsk/altbn128/cloudflare/native/linux
-ENV ALTBN128_LINUX_LIBRARY=libbn128.so
-ENV SECP256K1_LINUX_RESOURCES=src/main/resources/org/bitcoin/native/Linux/x86_64
-ENV SECP256K1_LINUX_LIBRARY=libsecp256k1.so
 
 # ENV VARIABLES
 ENV GOROOT=$GOCUSTOM/go
@@ -34,14 +30,6 @@ WORKDIR /native
 
 # Copying jni headers to java /include
 RUN cp -r jniheaders/include $JAVA_HOME
-
-# Building altbn128
-WORKDIR /native/altbn128
-RUN go get &&\
-  make clean &&\
-  make linux &&\
-  rm -f ../$ALTBN128_LINUX_RESOURCES/$ALTBN128_LINUX_LIBRARY &&\
-  cp $ALTBN128_LINUX_LIBRARY ../$ALTBN128_LINUX_RESOURCES
 
 # Expose
 WORKDIR /native

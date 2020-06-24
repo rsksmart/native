@@ -9,7 +9,7 @@ In this project you'll find all the native libraries used in rskj.
 
 ## Build
 
-## Productive
+### Productive
 
 Requirements 
 - Docker
@@ -26,7 +26,7 @@ Then run it
 docker run --rm -v $(pwd)/build:/native/build native-libs
 ```
 
-## Development
+### Development
 
 You can use the same productive build to develop, but it will only work for linux. There is an experimental build which also supports mac and windows.
 
@@ -35,6 +35,15 @@ You can use the same productive build to develop, but it will only work for linu
 ```
 
 ## Build a Specific Library
+
+### Altbn128
+
+Requirements
+- go
+
+```
+./gradlew buildAltbn128
+```
 
 ### Secp256k1
 
