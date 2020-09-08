@@ -103,6 +103,22 @@ SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_ecdsa_recover(
     const unsigned char *msg32
 ) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
 
+/** Checks for point of infinity from a signature.
+ *
+ *  Returns: 1: if it's point of infinity.
+ *           0: otherwise.
+ *  Args:    ctx:        pointer to a context object, initialized for verification (cannot be NULL)
+ *  Out:     pubkey:     pointer to the recovered public key (cannot be NULL)
+ *  In:      sig:        pointer to initialized signature that supports pubkey recovery (cannot be NULL)
+ *           msg32:      the 32-byte message hash assumed to be signed (cannot be NULL)
+ */
+SECP256K1_API SECP256K1_WARN_UNUSED_RESULT int secp256k1_is_infinity_internal(
+    const secp256k1_context* ctx,
+    secp256k1_pubkey *pubkey,
+    const secp256k1_ecdsa_recoverable_signature *sig,
+    const unsigned char *msg32
+) SECP256K1_ARG_NONNULL(1) SECP256K1_ARG_NONNULL(2) SECP256K1_ARG_NONNULL(3) SECP256K1_ARG_NONNULL(4);
+
 #ifdef __cplusplus
 }
 #endif

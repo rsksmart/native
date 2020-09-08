@@ -469,6 +469,22 @@ public class NativeSecp256k1 {
         return resArr;
     }
 
+    public static boolean isInfinity(byte[] sig, byte[] message, int recid) throws AssertFailException {
+        checkArgument(sig.length == 64);
+        checkArgument(message.length == 32);
+        ByteBuffer byteBuff = pack(sig, message);
+
+        int isInfinity;
+        r.lock();
+        try {
+            isInfinity = secp256k1_is_infinity(byteBuff, Secp256k1Context.getContext(), recid);
+        } finally {
+            r.unlock();
+        }
+
+        return isInfinity == 1;
+    }
+
     public static byte[] ecdsaRecover(byte[] sig, byte[] message, int recid, boolean compressed) throws AssertFailException {
         checkArgument(sig.length == 64);
         checkArgument(message.length == 32);
@@ -549,5 +565,5 @@ public class NativeSecp256k1 {
 
     private static native byte[][] secp256k1_ecdsa_recover(ByteBuffer byteBuff, long context, int recid, int compressed);
 
-
+    private static native int secp256k1_is_infinity(ByteBuffer byteBuff, long context, int recid);
 }

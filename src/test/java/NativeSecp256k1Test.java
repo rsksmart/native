@@ -7,6 +7,7 @@ import org.junit.Test;
 import java.util.Arrays;
 
 import static org.bitcoin.NativeSecp256k1Util.*;
+import static org.junit.Assert.assertTrue;
 
 /**
  * This class holds test cases defined for testing this library.
@@ -272,5 +273,16 @@ public class NativeSecp256k1Test {
         byte[] pub0 = NativeSecp256k1.ecdsaRecover(sig, data, 0, compressed);
         byte[] pub1 = NativeSecp256k1.ecdsaRecover(sig, data, 1, compressed);
         assertEquals(Arrays.equals(pub, pub0) || Arrays.equals(pub, pub1), true, "testEcdsaRecover" + (compressed ? "Compressed" : "Uncompressed"));
+    }
+
+    @Test
+    public void testIsInfinity() throws AssertFailException {
+        byte[] data = BaseEncoding.base16().lowerCase().decode("CF80CD8AED482D5D1527D7DC72FCEFF84E6326592848447D2DC0B0E87DFC9A90".toLowerCase()); //sha256hash of "testing" todo(fedejinich) this should point to infinity
+        byte[] sec = BaseEncoding.base16().lowerCase().decode("67E56582298859DDAE725F972992A07C6C4FB9F62A8FFF58CE3CA926A1063530".toLowerCase()); //todo(fedejinich) this should point to infinity
+
+        byte[] sig = NativeSecp256k1.signCompact(data, sec);
+        boolean isInfinity = NativeSecp256k1.isInfinity(sig, data, 0);
+
+        assertTrue(isInfinity);
     }
 }

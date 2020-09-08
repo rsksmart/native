@@ -640,3 +640,27 @@ JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ecdsa
     return retArray;
 }
 
+/*
+ * Class:     org_bitcoin_NativeSecp256k1
+ * Method:    secp256k1_is_infinity
+ * Signature: (Ljava/nio/ByteBuffer;JII)I
+ */
+JNIEXPORT jint JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1is_1infinity
+  (JNIEnv *env, jclass classObject, jobject byteBufferObject, jlong ctx_l, jint recid)
+{
+    secp256k1_context *ctx = (secp256k1_context*)(uintptr_t)ctx_l;
+    const unsigned char* sigdata = (*env)->GetDirectBufferAddress(env, byteBufferObject);
+    const unsigned char* msgdata = (const unsigned char*)(sigdata + 64);
+    secp256k1_ecdsa_recoverable_signature sig;
+    secp256k1_pubkey pub;
+
+    int ret = secp256k1_ecdsa_recoverable_signature_parse_compact(ctx, &sig, sigdata, recid);
+
+    if (ret) {
+       ret = secp256k1_is_infinity_internal(ctx, &pub, &sig, msgdata);
+    }
+
+    (void)classObject;
+
+    return ret;
+}
