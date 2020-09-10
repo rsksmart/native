@@ -1,10 +1,12 @@
 import org.bitcoin.NativeSecp256k1;
+import org.bitcoin.NativeSecp256k1Util;
 import org.bitcoin.Secp256k1Loader;
 import com.google.common.io.BaseEncoding;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.bitcoin.NativeSecp256k1Util.*;
 import static org.junit.Assert.assertTrue;
@@ -276,13 +278,23 @@ public class NativeSecp256k1Test {
     }
 
     @Test
-    public void testIsInfinity() throws AssertFailException {
-        byte[] data = BaseEncoding.base16().lowerCase().decode("CF80CD8AED482D5D1527D7DC72FCEFF84E6326592848447D2DC0B0E87DFC9A90".toLowerCase()); //sha256hash of "testing" todo(fedejinich) this should point to infinity
-        byte[] sec = BaseEncoding.base16().lowerCase().decode("67E56582298859DDAE725F972992A07C6C4FB9F62A8FFF58CE3CA926A1063530".toLowerCase()); //todo(fedejinich) this should point to infinity
+    public void testIsInfinityPointOfInfinitySig() throws AssertFailException {
+        String zero = String.join("", Collections.nCopies(64, "0"));
+        testIsInfinity(zero, true, "PointOfInfinitySig");
+    }
+
+    @Test
+    public void testIsInfinityValidSig() throws AssertFailException {
+        testIsInfinity("67E56582298859DDAE725F972992A07C6C4FB9F62A8FFF58CE3CA926A1063530", false, "ValidSig");
+    }
+
+    private void testIsInfinity(String key, boolean expected, String message) throws AssertFailException {
+        byte[] data = BaseEncoding.base16().lowerCase().decode("CF80CD8AED482D5D1527D7DC72FCEFF84E6326592848447D2DC0B0E87DFC9A90".toLowerCase()); //sha256hash of "testing"
+        byte[] sec = BaseEncoding.base16().lowerCase().decode(key.toLowerCase());
 
         byte[] sig = NativeSecp256k1.signCompact(data, sec);
         boolean isInfinity = NativeSecp256k1.isInfinity(sig, data, 0);
 
-        assertTrue(isInfinity);
+        assertEquals(expected, isInfinity, "testIsInfinity" + message);
     }
 }

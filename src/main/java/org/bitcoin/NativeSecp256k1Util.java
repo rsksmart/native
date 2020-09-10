@@ -16,8 +16,6 @@
 
 package org.bitcoin;
 
-import java.util.Arrays;
-
 public class NativeSecp256k1Util{
 
     public static void assertEquals( int val, int val2, String message ) throws AssertFailException{
