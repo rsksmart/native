@@ -61,7 +61,7 @@ Requirements
 - Docker
 
 ```
-./gradlew buildSecp256k1Experimental
+./gradlew buildSecp256k1Cross
 ```
 
 ## Tests
