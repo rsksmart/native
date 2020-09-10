@@ -26,13 +26,15 @@ Then run it
 docker run --rm -v $(pwd)/build:/native/build native-libs
 ```
 
-### Development
+### Dev
 
-You can use the same productive build to develop, but it will only work for linux. There is an experimental build which also supports mac and windows.
+There is a second experimental build process. With this one you'll be able to do a cross platform build for secp256k1.  
 
 ```bash
-./gradlew buildExperimental
+./gradlew buildDev
 ```
+
+NOTE: Linux, Mac & Win binaries at `resources/`
 
 ## Build a Specific Library
 
@@ -86,4 +88,4 @@ OpenJDK 64-Bit Server VM (build 25.252-b09, mixed mode)
 
 ## Disclaimer
 
-Experimental features should only be used under your own risk.
+Experimental/dev features should only be used under your own risk.
