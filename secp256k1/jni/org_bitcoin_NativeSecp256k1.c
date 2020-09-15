@@ -654,13 +654,17 @@ JNIEXPORT jint JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1is_1infinity
     secp256k1_ecdsa_recoverable_signature sig;
     secp256k1_pubkey pub;
 
-    int ret = secp256k1_ecdsa_recoverable_signature_parse_compact(ctx, &sig, sigdata, recid);
+    int parsed = secp256k1_ecdsa_recoverable_signature_parse_compact(ctx, &sig, sigdata, recid);
 
-    if (ret) {
-       ret = secp256k1_is_infinity_internal(ctx, &pub, &sig, msgdata);
+    if (parsed) {
+      int isInfinity = secp256k1_ecdsa_recover_is_infinity(ctx, &pub, &sig, msgdata);
+      (void)classObject;
+
+      return isInfinity;
+    } else {
+      parsed = -1;
+      (void)classObject;
+
+      return parsed;
     }
-
-    (void)classObject;
-
-    return ret;
 }

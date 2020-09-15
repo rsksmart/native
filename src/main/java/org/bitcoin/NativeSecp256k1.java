@@ -17,6 +17,7 @@
 
 package org.bitcoin;
 
+import java.lang.annotation.Native;
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 
@@ -41,7 +42,12 @@ public class NativeSecp256k1 {
     private static final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
     private static final Lock r = rwl.readLock();
     private static final Lock w = rwl.writeLock();
+    public static final String PARSE_ERROR = "Parse error";
     private static ThreadLocal<ByteBuffer> nativeECDSABuffer = new ThreadLocal<ByteBuffer>();
+
+    public static final String RETRIEVED_R_S_ERROR = "Retrieved r or s is zero (at main_impl.h:132)";
+    public static final String FIELD_ELEMENTS_ERROR = "Couldn't compare field elements (at main_impl.h:141)";
+    public static final String AFFINE_COORDINATES_ERROR = "Couldn't set affine coordinates (at main_impl.h:146)";
 
     private static ByteBuffer pack(byte[]... buffers) {
         int size = 0;
@@ -469,7 +475,8 @@ public class NativeSecp256k1 {
         return resArr;
     }
 
-    public static boolean isInfinity(byte[] sig, byte[] message, int recid) {
+    public static boolean isInfinity(byte[] sig, byte[] message, int recid) throws NativeSecp256k1Exception {
+        //checkArgument(sig.length == 64);
         checkArgument(message.length == 32);
         ByteBuffer byteBuff = pack(sig, message);
 
@@ -480,6 +487,15 @@ public class NativeSecp256k1 {
         } finally {
             r.unlock();
         }
+
+        if(isInfinity == -1)
+            throw new NativeSecp256k1Exception(PARSE_ERROR);
+        else if(isInfinity == -2)
+            throw new NativeSecp256k1Exception(RETRIEVED_R_S_ERROR);
+        else if(isInfinity == -3)
+            throw new NativeSecp256k1Exception(FIELD_ELEMENTS_ERROR);
+        else if(isInfinity == -4)
+            throw new NativeSecp256k1Exception(AFFINE_COORDINATES_ERROR);
 
         return isInfinity == 1;
     }

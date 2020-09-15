@@ -120,6 +120,42 @@ static int secp256k1_ecdsa_sig_recover(const secp256k1_ecmult_context *ctx, cons
     return !secp256k1_gej_is_infinity(&qj);
 }
 
+static int secp256k1_ecdsa_sig_recover_is_infinity(const secp256k1_ecmult_context *ctx, const secp256k1_scalar *sigr, const secp256k1_scalar* sigs, secp256k1_ge *pubkey, const secp256k1_scalar *message, int recid) {
+    unsigned char brx[32];
+    secp256k1_fe fx;
+    secp256k1_ge x;
+    secp256k1_gej xj;
+    secp256k1_scalar rn, u1, u2;
+    secp256k1_gej qj;
+    int r;
+
+    if (secp256k1_scalar_is_zero(sigr) || secp256k1_scalar_is_zero(sigs)) {
+        return 10;
+    }
+
+    secp256k1_scalar_get_b32(brx, sigr);
+    r = secp256k1_fe_set_b32(&fx, brx);
+    (void)r;
+    VERIFY_CHECK(r); /* brx comes from a scalar, so is less than the order; certainly less than p */
+    if (recid & 2) {
+        if (secp256k1_fe_cmp_var(&fx, &secp256k1_ecdsa_const_p_minus_order) >= 0) {
+            return 11;
+        }
+        secp256k1_fe_add(&fx, &secp256k1_ecdsa_const_order_as_fe);
+    }
+    if (!secp256k1_ge_set_xo_var(&x, &fx, recid & 1)) {
+        return 12;
+    }
+    secp256k1_gej_set_ge(&xj, &x);
+    secp256k1_scalar_inverse_var(&rn, sigr);
+    secp256k1_scalar_mul(&u1, &rn, message);
+    secp256k1_scalar_negate(&u1, &u1);
+    secp256k1_scalar_mul(&u2, &rn, sigs);
+    secp256k1_ecmult(ctx, &qj, &xj, &u2, &u1);
+    secp256k1_ge_set_gej_var(pubkey, &qj);
+    return secp256k1_gej_is_infinity(&qj);
+}
+
 int secp256k1_ecdsa_sign_recoverable(const secp256k1_context* ctx, secp256k1_ecdsa_recoverable_signature *signature, const unsigned char *msg32, const unsigned char *seckey, secp256k1_nonce_function noncefp, const void* noncedata) {
     secp256k1_scalar r, s;
     secp256k1_scalar sec, non, msg;
@@ -190,7 +226,7 @@ int secp256k1_ecdsa_recover(const secp256k1_context* ctx, secp256k1_pubkey *pubk
     }
 }
 
-int secp256k1_is_infinity_internal(const secp256k1_context* ctx, secp256k1_pubkey *pubkey, const secp256k1_ecdsa_recoverable_signature *signature, const unsigned char *msg32) {
+int secp256k1_ecdsa_recover_is_infinity(const secp256k1_context* ctx, secp256k1_pubkey *pubkey, const secp256k1_ecdsa_recoverable_signature *signature, const unsigned char *msg32) {
     secp256k1_ge q;
     secp256k1_scalar r, s;
     secp256k1_scalar m;
@@ -205,7 +241,7 @@ int secp256k1_is_infinity_internal(const secp256k1_context* ctx, secp256k1_pubke
     VERIFY_CHECK(recid >= 0 && recid < 4);  /* should have been caught in parse_compact */
     secp256k1_scalar_set_b32(&m, msg32, NULL);
 
-    int isInfinity = !secp256k1_ecdsa_sig_recover(&ctx->ecmult_ctx, &r, &s, &q, &m, recid); /* this method ends up doing !isInfinity */
+    int isInfinity = secp256k1_ecdsa_sig_recover_is_infinity(&ctx->ecmult_ctx, &r, &s, &q, &m, recid);
 
     return isInfinity;
 }
