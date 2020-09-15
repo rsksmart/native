@@ -129,8 +129,12 @@ static int secp256k1_ecdsa_sig_recover_is_infinity(const secp256k1_ecmult_contex
     secp256k1_gej qj;
     int r;
 
-    if (secp256k1_scalar_is_zero(sigr) || secp256k1_scalar_is_zero(sigs)) {
-        return 10;
+    if (secp256k1_scalar_is_zero(sigr)) {
+        return -2;
+    }
+
+    if(secp256k1_scalar_is_zero(sigs)) {
+        return -3;
     }
 
     secp256k1_scalar_get_b32(brx, sigr);
@@ -139,12 +143,13 @@ static int secp256k1_ecdsa_sig_recover_is_infinity(const secp256k1_ecmult_contex
     VERIFY_CHECK(r); /* brx comes from a scalar, so is less than the order; certainly less than p */
     if (recid & 2) {
         if (secp256k1_fe_cmp_var(&fx, &secp256k1_ecdsa_const_p_minus_order) >= 0) {
-            return 11;
+            return -4;
         }
         secp256k1_fe_add(&fx, &secp256k1_ecdsa_const_order_as_fe);
     }
+
     if (!secp256k1_ge_set_xo_var(&x, &fx, recid & 1)) {
-        return 12;
+        return -5;
     }
     secp256k1_gej_set_ge(&xj, &x);
     secp256k1_scalar_inverse_var(&rn, sigr);
@@ -231,6 +236,7 @@ int secp256k1_ecdsa_recover_is_infinity(const secp256k1_context* ctx, secp256k1_
     secp256k1_scalar r, s;
     secp256k1_scalar m;
     int recid;
+    int isInfinity;
     VERIFY_CHECK(ctx != NULL);
     ARG_CHECK(secp256k1_ecmult_context_is_built(&ctx->ecmult_ctx));
     ARG_CHECK(msg32 != NULL);
@@ -241,7 +247,7 @@ int secp256k1_ecdsa_recover_is_infinity(const secp256k1_context* ctx, secp256k1_
     VERIFY_CHECK(recid >= 0 && recid < 4);  /* should have been caught in parse_compact */
     secp256k1_scalar_set_b32(&m, msg32, NULL);
 
-    int isInfinity = secp256k1_ecdsa_sig_recover_is_infinity(&ctx->ecmult_ctx, &r, &s, &q, &m, recid);
+    isInfinity = secp256k1_ecdsa_sig_recover_is_infinity(&ctx->ecmult_ctx, &r, &s, &q, &m, recid);
 
     return isInfinity;
 }

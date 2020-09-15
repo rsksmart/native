@@ -476,7 +476,7 @@ public class NativeSecp256k1 {
     }
 
     public static boolean isInfinity(byte[] sig, byte[] message, int recid) throws NativeSecp256k1Exception {
-        //checkArgument(sig.length == 64);
+        checkArgument(sig.length == 64);
         checkArgument(message.length == 32);
         ByteBuffer byteBuff = pack(sig, message);
 

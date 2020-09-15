@@ -16,22 +16,26 @@
 
 package org.bitcoin;
 
+import java.math.BigInteger;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
+
 public class NativeSecp256k1Util{
 
-    public static void assertEquals( int val, int val2, String message ) throws AssertFailException{
-      if( val != val2 )
+    public static void assertEquals( int expected, int val, String message ) throws AssertFailException{
+      if( expected != val )
         throw new AssertFailException("FAIL: " + message);
     }
 
-    public static void assertEquals( boolean val, boolean val2, String message ) throws AssertFailException{
-      if( val != val2 )
+    public static void assertEquals( boolean expected, boolean val, String message ) throws AssertFailException{
+      if( expected != val )
         throw new AssertFailException("FAIL: " + message);
       else
         System.out.println("PASS: " + message);
     }
 
-    public static void assertEquals( String val, String val2, String message ) throws AssertFailException{
-      if( !val.equals(val2) )
+    public static void assertEquals( String expected, String val, String message ) throws AssertFailException{
+      if( !expected.equals(val) )
         throw new AssertFailException("FAIL: " + message);
       else
         System.out.println("PASS: " + message);
@@ -47,5 +51,55 @@ public class NativeSecp256k1Util{
         if (!expression) {
             throw new IllegalArgumentException();
         }
+    }
+
+
+    /**
+     * If "fixed" returns a 64 byte array long
+     * if not "fixed" returns a (r.length + s.length) bytes array long
+     *
+     * Note: When fixed, we take 32 bytes from "r" and 32 bytes from "s".
+     *
+     * @param sig {r,s}
+     * @param fixed 64 bytes array (32 from r, 32 from s)
+     * @return r + s (bytes array)
+     */
+    /**
+     *
+     * @param r
+     * @param s
+     * @param fixed
+     * @return
+     */
+    public static byte[] concatenate(BigInteger r, BigInteger s, boolean fixed) {
+        byte[] rBytes = r.toByteArray();
+        byte[] sBytes = s.toByteArray();
+        byte[] allByteArray = new byte[fixed ? 64 : rBytes.length + sBytes.length];
+        ByteBuffer buff = ByteBuffer.wrap(allByteArray);
+        if(fixed) {
+            for (int i = rBytes.length; i < 32; i++) {
+                buff.put((byte) 0);
+            }
+        }
+        buff.put(Arrays.copyOfRange(rBytes, getStartIndex(rBytes, fixed), rBytes.length));
+        if(fixed) {
+            for (int i = sBytes.length; i < 32; i++) {
+                buff.put((byte) 0);
+            }
+        }
+        buff.put(Arrays.copyOfRange(sBytes, getStartIndex(sBytes, fixed), sBytes.length));
+        return buff.array();
+    }
+
+    /**
+     *  If bytes length  is greater than 32, we keep the last 32 bytes at the right.
+     *          - So starting byte index will be = length - 32.
+     *  If not
+     *          -  Starting byte index = 0.
+     * @param sBytes
+     * @return
+     */
+    private static int getStartIndex(byte[] sBytes, boolean fixed) {
+        return sBytes.length > 32 && fixed ? sBytes.length - 32 : 0;
     }
 }
