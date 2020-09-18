@@ -508,13 +508,13 @@ public class NativeSecp256k1 {
         }
 
         if(isInfinity == -1)
-            throw new NativeSecp256k1Exception(PARSE_ERROR);
+            throw new NativeSecp256k1Exception(PARSE_ERROR); // TODO test
         else if(isInfinity == -2)
-            throw new NativeSecp256k1Exception(RETRIEVED_R_S_ERROR);
+            throw new NativeSecp256k1Exception(RETRIEVED_R_S_ERROR); // this one is quite difficult because sig.length == 64
         else if(isInfinity == -3)
-            throw new NativeSecp256k1Exception(FIELD_ELEMENTS_ERROR);
+            throw new NativeSecp256k1Exception(FIELD_ELEMENTS_ERROR); // TODO test
         else if(isInfinity == -4)
-            throw new NativeSecp256k1Exception(AFFINE_COORDINATES_ERROR);
+            throw new NativeSecp256k1Exception(AFFINE_COORDINATES_ERROR); // TODO test
 
         return isInfinity == 1;
     }
