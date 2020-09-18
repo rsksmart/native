@@ -21,32 +21,6 @@ import java.nio.ByteBuffer;
 import java.util.Arrays;
 
 public class NativeSecp256k1Util{
-
-    public static void assertEquals( int expected, int val, String message ) throws AssertFailException{
-      if( expected != val )
-        throw new AssertFailException("FAIL: " + message);
-    }
-
-    public static void assertEquals( boolean expected, boolean val, String message ) throws AssertFailException{
-      if( expected != val )
-        throw new AssertFailException("FAIL: " + message);
-      else
-        System.out.println("PASS: " + message);
-    }
-
-    public static void assertEquals( String expected, String val, String message ) throws AssertFailException{
-      if( !expected.equals(val) )
-        throw new AssertFailException("FAIL: " + message);
-      else
-        System.out.println("PASS: " + message);
-    }
-
-    public static class AssertFailException extends Exception {
-      public AssertFailException(String message) {
-        super( message );
-      }
-    }
-
     public static void checkArgument(boolean expression) {
         if (!expression) {
             throw new IllegalArgumentException();
