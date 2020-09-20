@@ -41,11 +41,12 @@ public class NativeSecp256k1 {
     private static final ReentrantReadWriteLock rwl = new ReentrantReadWriteLock();
     private static final Lock r = rwl.readLock();
     private static final Lock w = rwl.writeLock();
-    public static final String PARSE_ERROR = "Parse error";
     private static ThreadLocal<ByteBuffer> nativeECDSABuffer = new ThreadLocal<ByteBuffer>();
 
-    public static final String RETRIEVED_R_S_ERROR = "Retrieved r or s is zero (at main_impl.h:132)";
-    public static final String FIELD_ELEMENTS_ERROR = "Couldn't compare field elements (at main_impl.h:141)";
+    public static final String PARSE_ERROR = "Parse error";
+    public static final String RETRIEVED_R_ERROR = "Retrieved r or s is zero (at main_impl.h:132)";
+    public static final String RETRIEVED_S_ERROR = "Retrived s is zero (at main_impl:137)";
+    public static final String LARGER_COORDINATES_ERROR = "Couldn't compare field elements (at main_impl.h:141)";
     public static final String AFFINE_COORDINATES_ERROR = "Couldn't set affine coordinates (at main_impl.h:146)";
 
     private static ByteBuffer pack(byte[]... buffers) {
@@ -510,10 +511,12 @@ public class NativeSecp256k1 {
         if(isInfinity == -1)
             throw new NativeSecp256k1Exception(PARSE_ERROR); // TODO test
         else if(isInfinity == -2)
-            throw new NativeSecp256k1Exception(RETRIEVED_R_S_ERROR); // this one is quite difficult because sig.length == 64
+            throw new NativeSecp256k1Exception(RETRIEVED_R_ERROR);
         else if(isInfinity == -3)
-            throw new NativeSecp256k1Exception(FIELD_ELEMENTS_ERROR); // TODO test
+            throw new NativeSecp256k1Exception(RETRIEVED_S_ERROR);
         else if(isInfinity == -4)
+            throw new NativeSecp256k1Exception(LARGER_COORDINATES_ERROR);
+        else if(isInfinity == -5)
             throw new NativeSecp256k1Exception(AFFINE_COORDINATES_ERROR); // TODO test
 
         return isInfinity == 1;

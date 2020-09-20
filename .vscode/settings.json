@@ -1,7 +1,0 @@
-{
-    "files.associations": {
-        "algorithm": "cpp",
-        "atomic": "cpp",
-        "cstdint": "cpp"
-    }
-}

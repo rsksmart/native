@@ -19,6 +19,7 @@ package org.bitcoin;
 import java.math.BigInteger;
 import java.nio.ByteBuffer;
 import java.util.Arrays;
+import java.util.Collections;
 
 public class NativeSecp256k1Util{
     public static void checkArgument(boolean expression) {
@@ -45,24 +46,26 @@ public class NativeSecp256k1Util{
      * @param fixed
      * @return
      */
-    public static byte[] concatenate(BigInteger r, BigInteger s, boolean fixed) {
-        byte[] rBytes = r.toByteArray();
-        byte[] sBytes = s.toByteArray();
-        byte[] allByteArray = new byte[fixed ? 64 : rBytes.length + sBytes.length];
+    public static byte[] concatenate(byte[] r, byte[] s, boolean fixed) {
+        byte[] allByteArray = new byte[fixed ? 64 : r.length + s.length];
         ByteBuffer buff = ByteBuffer.wrap(allByteArray);
         if(fixed) {
-            for (int i = rBytes.length; i < 32; i++) {
+            for (int i = r.length; i < 32; i++) {
                 buff.put((byte) 0);
             }
         }
-        buff.put(Arrays.copyOfRange(rBytes, getStartIndex(rBytes, fixed), rBytes.length));
+        buff.put(Arrays.copyOfRange(r, getStartIndex(r, fixed), r.length));
         if(fixed) {
-            for (int i = sBytes.length; i < 32; i++) {
+            for (int i = s.length; i < 32; i++) {
                 buff.put((byte) 0);
             }
         }
-        buff.put(Arrays.copyOfRange(sBytes, getStartIndex(sBytes, fixed), sBytes.length));
+        buff.put(Arrays.copyOfRange(s, getStartIndex(s, fixed), s.length));
         return buff.array();
+    }
+
+    public static byte[] concatenate(BigInteger r, BigInteger s, boolean fixed) {
+        return concatenate(r.toByteArray(), s.toByteArray(), fixed);
     }
 
     /**
@@ -75,5 +78,16 @@ public class NativeSecp256k1Util{
      */
     private static int getStartIndex(byte[] sBytes, boolean fixed) {
         return sBytes.length > 32 && fixed ? sBytes.length - 32 : 0;
+    }
+
+
+    // Testing
+    public static String zero32String() {
+        return String.join("", Collections.nCopies(64, "0")).toLowerCase();
+    }
+
+    // Testing
+    public static String random32String() {
+        return "CF80CD8AED482D5D1527D7DC72FCEFF84E6326592848447D2DC0B0E87DFC9A90".toLowerCase();
     }
 }
