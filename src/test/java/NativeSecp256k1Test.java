@@ -309,12 +309,16 @@ public class NativeSecp256k1Test {
 
     @Test
     public void testIsInfinityRError() {
-        isInfinityRSErrorInternal(zero32String(), random32String(), NativeSecp256k1.RETRIEVED_R_ERROR);
+        String r = zero32String();
+        String s = "CF80CD8AED482D5D1527D7DC72FCEFF84E6326592848447D2DC0B0E87DFC9A90".toLowerCase();
+        isInfinityRSErrorInternal(r, s, NativeSecp256k1.RETRIEVED_R_ERROR);
     }
 
     @Test
     public void testIsInfinitySError() {
-        isInfinityRSErrorInternal(random32String(), zero32String(), NativeSecp256k1.RETRIEVED_S_ERROR);
+        String r = "CF80CD8AED482D5D1527D7DC72FCEFF84E6326592848447D2DC0B0E87DFC9A90".toLowerCase();
+        String s = zero32String();
+        isInfinityRSErrorInternal(r, s, NativeSecp256k1.RETRIEVED_S_ERROR);
     }
 
     @Test

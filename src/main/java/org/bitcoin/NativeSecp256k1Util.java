@@ -57,9 +57,4 @@ public class NativeSecp256k1Util{
     public static String zero32String() {
         return String.join("", Collections.nCopies(64, "0")).toLowerCase();
     }
-
-    // Testing
-    public static String random32String() {
-        return "CF80CD8AED482D5D1527D7DC72FCEFF84E6326592848447D2DC0B0E87DFC9A90".toLowerCase();
-    }
 }
