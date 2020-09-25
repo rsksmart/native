@@ -295,7 +295,7 @@ public class NativeSecp256k1Test {
         // TODO this should be removed and only use signCompact
         BigInteger r = new BigInteger("28824799845160661199077176548860063813328724131408018686643359460017962873020");
         BigInteger s = new BigInteger("48456094880180616145578324187715054843822774625773874469802229460318542735739");
-        byte[] signature = NativeSecp256k1Util.concatenate(r,s,false);
+        byte[] signature = NativeSecp256k1Util.concatenate(r,s);
 
         assertTrue(NativeSecp256k1.isInfinity(signature, data, 0));
     }
@@ -326,7 +326,7 @@ public class NativeSecp256k1Test {
         // TODO this should be removed and only use signCompact
         BigInteger r = new BigInteger("28824799845160661199077176548860063813328724131408018686643359460017962873020");
         BigInteger s = new BigInteger("48456094880180616145578324187715054843822774625773874469802229460318542735739");
-        byte[] signature = NativeSecp256k1Util.concatenate(r,s,false);
+        byte[] signature = NativeSecp256k1Util.concatenate(r,s);
 
         try {
             NativeSecp256k1.isInfinity(signature, data, 2);
@@ -349,7 +349,7 @@ public class NativeSecp256k1Test {
         // TODO this should be replaced with private key and retrieve signature with signCompact
         byte[] r = BaseEncoding.base16().lowerCase().decode(rString);
         byte[] s = BaseEncoding.base16().lowerCase().decode(sString);
-        byte[] signature = concatenate(r, s, false);
+        byte[] signature = concatenate(r, s);
 
         try {
             NativeSecp256k1.isInfinity(signature, data, 0);

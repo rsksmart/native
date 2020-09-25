@@ -30,10 +30,7 @@ public class NativeSecp256k1Util{
 
 
     /**
-     * If "fixed" returns a 64 byte array long
-     * if not "fixed" returns a (r.length + s.length) bytes array long
-     *
-     * Note: When fixed, we take 32 bytes from "r" and 32 bytes from "s".
+     * returns a (r.length + s.length) bytes array long
      *
      * @param sig {r,s}
      * @param fixed 64 bytes array (32 from r, 32 from s)
@@ -43,43 +40,18 @@ public class NativeSecp256k1Util{
      *
      * @param r
      * @param s
-     * @param fixed
      * @return
      */
-    public static byte[] concatenate(byte[] r, byte[] s, boolean fixed) {
-        byte[] allByteArray = new byte[fixed ? 64 : r.length + s.length];
-        ByteBuffer buff = ByteBuffer.wrap(allByteArray);
-        if(fixed) {
-            for (int i = r.length; i < 32; i++) {
-                buff.put((byte) 0);
-            }
-        }
-        buff.put(Arrays.copyOfRange(r, getStartIndex(r, fixed), r.length));
-        if(fixed) {
-            for (int i = s.length; i < 32; i++) {
-                buff.put((byte) 0);
-            }
-        }
-        buff.put(Arrays.copyOfRange(s, getStartIndex(s, fixed), s.length));
-        return buff.array();
+    public static byte[] concatenate(byte[] r, byte[] s) {
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[r.length + s.length]);
+        buffer.put(Arrays.copyOfRange(r, 0, r.length));
+        buffer.put(Arrays.copyOfRange(s, 0, s.length));
+        return buffer.array();
     }
 
-    public static byte[] concatenate(BigInteger r, BigInteger s, boolean fixed) {
-        return concatenate(r.toByteArray(), s.toByteArray(), fixed);
+    public static byte[] concatenate(BigInteger r, BigInteger s) {
+        return concatenate(r.toByteArray(), s.toByteArray());
     }
-
-    /**
-     *  If bytes length  is greater than 32, we keep the last 32 bytes at the right.
-     *          - So starting byte index will be = length - 32.
-     *  If not
-     *          -  Starting byte index = 0.
-     * @param sBytes
-     * @return
-     */
-    private static int getStartIndex(byte[] sBytes, boolean fixed) {
-        return sBytes.length > 32 && fixed ? sBytes.length - 32 : 0;
-    }
-
 
     // Testing
     public static String zero32String() {
