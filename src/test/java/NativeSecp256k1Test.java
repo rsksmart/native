@@ -1,16 +1,15 @@
 import org.bitcoin.NativeSecp256k1;
 import org.bitcoin.NativeSecp256k1Exception;
-import org.bitcoin.NativeSecp256k1Util;
 import org.bitcoin.Secp256k1Loader;
 import com.google.common.io.BaseEncoding;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.math.BigInteger;
+import java.nio.ByteBuffer;
 import java.util.Arrays;
 import java.util.Collections;
 
-import static org.bitcoin.NativeSecp256k1Util.*;
 import static org.junit.Assert.*;
 
 /**
@@ -295,7 +294,7 @@ public class NativeSecp256k1Test {
         // TODO this should be removed and only use signCompact
         BigInteger r = new BigInteger("28824799845160661199077176548860063813328724131408018686643359460017962873020");
         BigInteger s = new BigInteger("48456094880180616145578324187715054843822774625773874469802229460318542735739");
-        byte[] signature = NativeSecp256k1Util.concatenate(r,s);
+        byte[] signature = concatenate(r,s);
 
         assertTrue(NativeSecp256k1.isInfinity(signature, data, 0));
     }
@@ -309,7 +308,7 @@ public class NativeSecp256k1Test {
 
     @Test
     public void testIsInfinityRError() {
-        String r = zero32String();
+        String r = "0000000000000000000000000000000000000000000000000000000000000000";
         String s = "CF80CD8AED482D5D1527D7DC72FCEFF84E6326592848447D2DC0B0E87DFC9A90".toLowerCase();
         isInfinityRSErrorInternal(r, s, NativeSecp256k1.RETRIEVED_R_ERROR);
     }
@@ -317,7 +316,7 @@ public class NativeSecp256k1Test {
     @Test
     public void testIsInfinitySError() {
         String r = "CF80CD8AED482D5D1527D7DC72FCEFF84E6326592848447D2DC0B0E87DFC9A90".toLowerCase();
-        String s = zero32String();
+        String s = "0000000000000000000000000000000000000000000000000000000000000000";
         isInfinityRSErrorInternal(r, s, NativeSecp256k1.RETRIEVED_S_ERROR);
     }
 
@@ -330,7 +329,7 @@ public class NativeSecp256k1Test {
         // TODO this should be removed and only use signCompact
         BigInteger r = new BigInteger("28824799845160661199077176548860063813328724131408018686643359460017962873020");
         BigInteger s = new BigInteger("48456094880180616145578324187715054843822774625773874469802229460318542735739");
-        byte[] signature = NativeSecp256k1Util.concatenate(r,s);
+        byte[] signature = concatenate(r,s);
 
         try {
             NativeSecp256k1.isInfinity(signature, data, 2);
@@ -360,5 +359,29 @@ public class NativeSecp256k1Test {
         } catch (NativeSecp256k1Exception e) {
             assertEquals(error, e.getMessage());
         }
+    }
+
+    /**
+     * returns a (r.length + s.length) bytes array long
+     *
+     * @param sig {r,s}
+     * @param fixed 64 bytes array (32 from r, 32 from s)
+     * @return r + s (bytes array)
+     */
+    /**
+     *
+     * @param r
+     * @param s
+     * @return
+     */
+    public static byte[] concatenate(byte[] r, byte[] s) {
+        ByteBuffer buffer = ByteBuffer.wrap(new byte[r.length + s.length]);
+        buffer.put(Arrays.copyOfRange(r, 0, r.length));
+        buffer.put(Arrays.copyOfRange(s, 0, s.length));
+        return buffer.array();
+    }
+
+    public static byte[] concatenate(BigInteger r, BigInteger s) {
+        return concatenate(r.toByteArray(), s.toByteArray());
     }
 }

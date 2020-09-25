@@ -24,7 +24,6 @@ import java.math.BigInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
-import static org.bitcoin.NativeSecp256k1Util.*;
 
 /**
  * <p>This class holds native methods to handle ECDSA verification.</p>
@@ -567,6 +566,12 @@ public class NativeSecp256k1 {
             return secp256k1_context_randomize(byteBuff, Secp256k1Context.getContext()) == 1;
         } finally {
             w.unlock();
+        }
+    }
+
+    private static void checkArgument(boolean expression) {
+        if (!expression) {
+            throw new IllegalArgumentException();
         }
     }
 
