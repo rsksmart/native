@@ -510,12 +510,13 @@ JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ec_1p
     const secp256k1_pubkey *pubkeys[2];
     unsigned char outputSer[65];
     size_t outputLen = 65;
+    secp256k1_pubkey result;
+
 
     int ret = secp256k1_ec_pubkey_parse(ctx, &pubkey1, pubdata1, publen1);
     if (ret) {
         ret = secp256k1_ec_pubkey_parse(ctx, &pubkey2, pubdata2, publen2);
     }
-    secp256k1_pubkey result;
     if (ret) {
         pubkeys[0] = &pubkey1;
         pubkeys[1] = &pubkey2;
@@ -640,3 +641,30 @@ JNIEXPORT jobjectArray JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1ecdsa
     return retArray;
 }
 
+/*
+ * Class:     org_bitcoin_NativeSecp256k1
+ * Method:    secp256k1_is_infinity
+ * Signature: (Ljava/nio/ByteBuffer;JII)I
+ */
+JNIEXPORT jint JNICALL Java_org_bitcoin_NativeSecp256k1_secp256k1_1is_1infinity
+  (JNIEnv *env, jclass classObject, jobject byteBufferObject, jlong ctx_l, jint recid)
+{
+    secp256k1_context *ctx = (secp256k1_context*)(uintptr_t)ctx_l;
+    const unsigned char* sigdata = (*env)->GetDirectBufferAddress(env, byteBufferObject);
+    const unsigned char* msgdata = (const unsigned char*)(sigdata + 64);
+    secp256k1_ecdsa_recoverable_signature sig;
+    secp256k1_pubkey pub;
+    int isInfinity;
+
+    int parsed = secp256k1_ecdsa_recoverable_signature_parse_compact(ctx, &sig, sigdata, recid);
+
+    (void)classObject; /*this will disable unused variable warning*/
+
+    if (parsed) {
+      isInfinity = secp256k1_ecdsa_recover_is_infinity(ctx, &pub, &sig, msgdata);
+
+      return isInfinity;
+    }
+
+    return -1;
+}

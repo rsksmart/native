@@ -103,7 +103,7 @@ artifacts {
     archives javadocJar
 }
 
-task buildProject(group: 'build', description: 'builds libraries for supported OSs and packages them into productive jar') {
+task buildProject(group: 'native libraries projcet build', description: 'builds libraries for supported OSs and packages them into productive jar') {
     dependsOn 'generateJniHeaders'
     dependsOn 'replaceJniHeaders'
     dependsOn 'buildAltbn128'
@@ -111,11 +111,11 @@ task buildProject(group: 'build', description: 'builds libraries for supported O
     finalizedBy 'build'
 }
 
-task buildProjectExperimental(group: 'build', description: 'same as buildProject but uses experimental builds for each library instead') {
+task buildProjectDev(group: 'native libraries projcet build', description: 'same as buildProject but uses experimental builds for each library instead') {
     dependsOn 'generateJniHeaders'
     dependsOn 'replaceJniHeaders'
     dependsOn 'buildAltbn128'
-    dependsOn 'buildSecp256k1Experimental'
+    dependsOn 'buildSecp256k1Cross'
     finalizedBy 'build'
 }
 
@@ -129,9 +129,9 @@ tasks.withType(Jar) {
     }
 }
 
-// Altbn128 building tasks
+// Altbn128 build tasks
 
-task buildAltbn128(group: 'altbn128 build', description: 'builds altbn128 library with system go') {
+task buildAltbn128(group: 'altbn128', description: 'builds altbn128 library with system go') {
     doLast {
         exec {
             workingDir 'altbn128'
@@ -145,9 +145,9 @@ task buildAltbn128(group: 'altbn128 build', description: 'builds altbn128 librar
     }
 }
 
-// Secp256k1 building tasks
+// Secp256k1 build tasks
 
-task buildSecp256k1CurrentOS(group: 'secp256k1 building', description: 'builds secp256k1 library for current OS (helpful for development)') {
+task buildSecp256k1CurrentOS(group: 'secp256k1', description: 'builds secp256k1 library for current OS (helpful for development)') {
     dependsOn 'cleanSecp256k1'
     doLast {
         exec {
@@ -191,7 +191,7 @@ task buildSecp256k1CurrentOS(group: 'secp256k1 building', description: 'builds s
     }
 }
 
-task buildSecp256k1Experimental(group: 'secp256k1 building', description: 'builds secp256k1 for Linux, Mac and Windows (only linux library supports reproducibility)') {
+task buildSecp256k1Cross(group: 'secp256k1', description: 'builds secp256k1 for Linux, Mac and Windows (only linux library supports reproducibility)') {
     dependsOn 'cleanSecp256k1'
     doLast {
         exec {
@@ -227,7 +227,7 @@ task buildSecp256k1Experimental(group: 'secp256k1 building', description: 'build
     }
 }
 
-task cleanSecp256k1(group: 'secp256k1 building', description: 'removes libraries from main/resources folder') {
+task cleanSecp256k1(group: 'secp256k1', description: 'removes libraries from main/resources folder') {
     doLast {
         delete 'src/main/resources/org/bitcoin/native/'
         delete 'secp256k1/.libs'
@@ -236,7 +236,7 @@ task cleanSecp256k1(group: 'secp256k1 building', description: 'removes libraries
 
 // Aux
 
-task generateJniHeaders(type: JavaCompile, description: 'generates JNI headers (.h) by java sources') {
+task generateJniHeaders(group: 'JNI', type: JavaCompile, description: 'generates JNI headers (.h) by java sources') {
     doFirst {
         exec {
             commandLine "mkdir", "-p", "build/generated/jni-tmp"
@@ -254,7 +254,7 @@ task generateJniHeaders(type: JavaCompile, description: 'generates JNI headers (
     }
 }
 
-task replaceJniHeaders(group: 'Other', description: 'Replaces JNI old headers with generated headers (for each library)') {
+task replaceJniHeaders(group: 'JNI', description: 'Replaces JNI old headers with generated headers (for each library)') {
     copy {
         from 'build/generated/jni/org_bitcoin_NativeSecp256k1.h'
         into 'secp256k1/jni/'
