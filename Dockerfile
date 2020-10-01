@@ -22,6 +22,8 @@ RUN apt-get update && \
  cat goChecksum.txt && \
  sha256sum -c goChecksum.txt && \
  tar -xvf $GOLANG && mkdir -p $GOCUSTOM && mv go $GOCUSTOM
+RUN curl "https://sh.rustup.rs" -sSf | bash -s -- -y
+
 
 #Cloning native's repo
 #RUN git clone https://github.com/rsksmart/native.git

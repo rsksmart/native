@@ -66,6 +66,15 @@ Requirements
 ./gradlew buildSecp256k1Cross
 ```
 
+### BLS12_381
+
+Requirements
+- rust
+
+```
+./gradlew buildBls12_381
+```
+
 ## Tests
  
 ```bash
