@@ -75,15 +75,15 @@ Requirements
 ## Checksums
 
 ```
-libbn128.so: 53e325e98124c607ace30436ecb01110dc21285965b6269e427fe329c77e4f4d
-libsecp256k1.so: 412baa29795c9d50fb15de2521d737092171867a35a33846a2367409a8526b52
-native-1.1.0.jar: 9b851367af4eafd6af648e1ecbb51f5f19590b7b4418c0396ccf5d4a16b2b6ff
+libbn128.so: 669543be939058001ffb5ca3b816d3961f39db82dad60dfd0ffc89540956dc6f
+libsecp256k1.so: 0b99909b0c86b3f4bcad90f70eef81d7b5fd77f7d29997195b3291526e5cd7f0
+native-1.2.0.jar: 43f2308bd6bf982604d960c4d5438d2f3b12fd09e9c041395634dcf50aded48b
 go1.13.5.linux-amd64.tar.gz: 512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569
 
 $ java -version
-openjdk version "1.8.0_252"
-OpenJDK Runtime Environment (build 1.8.0_252-8u252-b09-1~18.04-b09)
-OpenJDK 64-Bit Server VM (build 25.252-b09, mixed mode)
+openjdk version "1.8.0_265"
+OpenJDK Runtime Environment (build 1.8.0_265-8u265-b01-0ubuntu2~18.04-b01)
+OpenJDK 64-Bit Server VM (build 25.265-b01, mixed mode)
 ```
 
 ## Disclaimer
