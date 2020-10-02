@@ -3,7 +3,7 @@ import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
 
 group 'co.rsk'
-version '1.1.0'
+version '1.2.0'
 
 buildscript {
     repositories {
