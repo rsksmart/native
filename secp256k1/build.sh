@@ -1,26 +1,14 @@
 #!/bin/bash
 
-echo 'Building binaries'
-echo '---------------------------------------------------------'
+# delete old build dir, if exists
+rm -rf "/native/src/main/resources/org/bitcoin/native/Linux/x86_64/" || true && \
+mkdir -p "/native/src/main/resources/org/bitcoin/native/Linux/x86_64/" && \
 
-cd "$(dirname "$0")"
+# clean & build secp256k1
+./autogen.sh && \
+./configure --host=x86_64-linux-gnu --enable-experimental --enable-module_ecdh --enable-module-recovery --enable-jni && \
+make clean && \
+make && \
 
-rm -rf build/ &&
-mkdir -p build/Linux/x86_64 &&
-mkdir -p build/Mac/x86_64 &&
-mkdir -p build/Windows/x86_64
-
-echo 'Building for linux'
-./build_linux.sh &&
-mv .libs/libsecp256k1.so.0.0.0 build/Linux/x86_64/
-echo '--------------------------'
-echo 'Building for Mac'
-./build_mac.sh &&
-mv .libs/libsecp256k1.0.dylib build/Mac/x86_64/
-echo '--------------------------'
-echo 'Building for Windows'
-./build_win.sh &&
-mv .libs/libsecp256k1-0.dll build/Windows/x86_64/
-
-echo '---------------------------------------------------------'
-echo 'BUILDED BINARIES'
+# move to resources
+cp .libs/libsecp256k1.so.0.0.0 "/native/src/main/resources/org/bitcoin/native/Linux/x86_64/libsecp256k1.so"

@@ -37,3 +37,4 @@ RUN cp -r jniheaders/include $JAVA_HOME
 WORKDIR /native
 ENTRYPOINT ["./gradlew"]
 CMD ["buildProject"]
+

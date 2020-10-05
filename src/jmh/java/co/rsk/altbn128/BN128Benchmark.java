@@ -1,8 +1,5 @@
 package co.rsk.altbn128;
 
-import co.rsk.altbn128.cloudflare.BN128Addition;
-import co.rsk.altbn128.cloudflare.BN128Multiplication;
-import co.rsk.altbn128.cloudflare.BN128Pairing;
 import org.openjdk.jmh.annotations.*;
 import org.openjdk.jmh.runner.Runner;
 import org.openjdk.jmh.runner.RunnerException;
