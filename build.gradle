@@ -103,7 +103,8 @@ artifacts {
     archives javadocJar
 }
 
-task buildProject(group: 'native libraries projcet build', description: 'builds libraries for supported OSs and packages them into productive jar') {
+task buildProject(group: 'build', description: 'builds libraries for supported OSs and packages them into productive jar') {
+    dependsOn 'cleanSecp256k1'
     dependsOn 'generateJniHeaders'
     dependsOn 'replaceJniHeaders'
     dependsOn 'buildAltbn128'
@@ -111,7 +112,8 @@ task buildProject(group: 'native libraries projcet build', description: 'builds 
     finalizedBy 'build'
 }
 
-task buildProjectDev(group: 'native libraries projcet build', description: 'same as buildProject but uses experimental builds for each library instead') {
+task buildProjectDev(group: 'build', description: 'same as buildProject but uses experimental builds for each library instead') {
+    dependsOn 'cleanSecp256k1'
     dependsOn 'generateJniHeaders'
     dependsOn 'replaceJniHeaders'
     dependsOn 'buildAltbn128'
@@ -148,7 +150,6 @@ task buildAltbn128(group: 'altbn128', description: 'builds altbn128 library with
 // Secp256k1 build tasks
 
 task buildSecp256k1CurrentOS(group: 'secp256k1', description: 'builds secp256k1 library for current OS (helpful for development)') {
-    dependsOn 'cleanSecp256k1'
     doLast {
         exec {
             workingDir 'secp256k1'
@@ -192,7 +193,6 @@ task buildSecp256k1CurrentOS(group: 'secp256k1', description: 'builds secp256k1 
 }
 
 task buildSecp256k1Cross(group: 'secp256k1', description: 'builds secp256k1 for Linux, Mac and Windows (only linux library supports reproducibility)') {
-    dependsOn 'cleanSecp256k1'
     doLast {
         exec {
             workingDir 'secp256k1'
