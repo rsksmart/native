@@ -1,11 +1,10 @@
 FROM ubuntu:18.04
 
 # CUSTOM VARIABLES
-ENV GOCUSTOM=/usr/local
 ENV GOLANG=go1.13.5.linux-amd64.tar.gz
 
 # ENV VARIABLES
-ENV GOROOT=$GOCUSTOM/go
+ENV GOROOT=/usr/local/go
 ENV GOPATH=/native/altbn128
 ENV GOBIN=$GOPATH/bin
 ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH

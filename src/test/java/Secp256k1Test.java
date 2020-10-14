@@ -15,7 +15,7 @@ import static org.junit.Assert.*;
 /**
  * This class holds test cases defined for testing this library.
  */
-public class NativeSecp256k1Test {
+public class Secp256k1Test {
     @Before
     public void init() throws Exception {
         Secp256k1Loader.initialize();
