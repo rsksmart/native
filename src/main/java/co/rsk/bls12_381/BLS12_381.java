@@ -1,7 +1,7 @@
 package co.rsk.bls12_381;
 
+import co.rsk.NativeLoader;
 import com.sun.jna.Library;
-import com.sun.jna.Native;
 import com.sun.jna.ptr.IntByReference;
 
 public class BLS12_381 implements Library {
@@ -10,10 +10,7 @@ public class BLS12_381 implements Library {
     static {
         boolean enabled;
         try {
-            //todo(fedejinich) load it from resources, this is hardcoded
-            String libraryPath = "/Users/fedejinich/Projects/native/src/main/resources/co/rsk/bls12_381";
-            System.setProperty("jna.library.path", libraryPath);
-            Native.register(BLS12_381.class, "eth_pairings");
+            NativeLoader.registerJNA(BLS12_381.class, "eth_pairings");
             enabled = true;
         } catch (final Throwable t) {
             enabled = false;
