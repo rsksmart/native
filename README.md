@@ -26,6 +26,10 @@ Builds each library, runs all the tests (only for linux) and bundles `native-x.y
 > docker run --rm -v $(pwd)/build:/native/build native-libs
 ```
 
+## Tests
+
+You'll only be able to run tests if your system it's compatible (linux recommended).
+
 ## Build a Specific Library
 
 To build an specific library
@@ -51,13 +55,14 @@ To build an specific library
 libbn128.so: ee41baa43b5a3927e99c2d0f826666e5baf2885ec0d689ea3c591db35ad9ae47
 
 # secp256k1
-libsecp256k1.so: 0b99909b0c86b3f4bcad90f70eef81d7b5fd77f7d29997195b3291526e5cd7f0
+libsecp256k1.so: dd55be8c14220f6c846a52ac891ff1d6f1f35d1f8bb5feb89364e420a50752a9
 
 # bls12-381
 libeth_pairings.so: da214a3c3d66b057a6d3636161da977fdd8dee638a82919e86c18a6137ca0d04
-eth_pairings.dll: bb78b4dbfbf12bdb4daff1acbd682c3df9da2d7c755bc776808d634889e5d6f0
+libeth_pairings.dylib: 2bc21d8648319d2e23c71c337728a33828eacd258d9702abb45584644b6b75a3
+eth_pairings.dll: 4c881d94bf38fc89aa59ad19e9839ee06e14d44082a46889909c32480e2bdc41
 
-native-1.3.0.jar: 58e707310e43f16e3e238469c26a777bc8ad4e3b3d0f7baf9a89ec881e53a1c5
+native-1.3.0.jar: c61df2d3b0f266f3ed1785a9640f2f5f3cee1494c05b928616c98c44a4c8ed04
 go1.13.5.linux-amd64.tar.gz: 512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569
 
 $ java -version
