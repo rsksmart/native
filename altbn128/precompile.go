@@ -20,8 +20,8 @@ import (
 	bn256 "./bn256"
 )
 
-//export Java_co_rsk_altbn128_cloudflare_JniBn128_add
-func Java_co_rsk_altbn128_cloudflare_JniBn128_add(env *C.JNIEnv, clazz C.jclass, x C.jbyteArray, len C.jint, y C.jbyteArray) C.jint {
+//export Java_co_rsk_altbn128_JniBn128_add
+func Java_co_rsk_altbn128_JniBn128_add(env *C.JNIEnv, clazz C.jclass, x C.jbyteArray, len C.jint, y C.jbyteArray) C.jint {
 	cData := C.getCByteArray(env, x)
 	slice := C.GoBytes(unsafe.Pointer(cData), len)
 	defer C.releaseCByteArray(env, x, cData)
@@ -36,8 +36,8 @@ func Java_co_rsk_altbn128_cloudflare_JniBn128_add(env *C.JNIEnv, clazz C.jclass,
 	return 1
 }
 
-//export Java_co_rsk_altbn128_cloudflare_JniBn128_mul
-func Java_co_rsk_altbn128_cloudflare_JniBn128_mul(env *C.JNIEnv, clazz C.jclass, x C.jbyteArray, len C.jint, y C.jbyteArray) C.jint {
+//export Java_co_rsk_altbn128_JniBn128_mul
+func Java_co_rsk_altbn128_JniBn128_mul(env *C.JNIEnv, clazz C.jclass, x C.jbyteArray, len C.jint, y C.jbyteArray) C.jint {
 	cData := C.getCByteArray(env, x)
 	slice := C.GoBytes(unsafe.Pointer(cData), len)
 	defer C.releaseCByteArray(env, x, cData)
@@ -52,8 +52,8 @@ func Java_co_rsk_altbn128_cloudflare_JniBn128_mul(env *C.JNIEnv, clazz C.jclass,
 	return 1
 }
 
-//export Java_co_rsk_altbn128_cloudflare_JniBn128_pairing
-func Java_co_rsk_altbn128_cloudflare_JniBn128_pairing(env *C.JNIEnv, clazz C.jclass, x C.jbyteArray, len C.jint, y C.jbyteArray) C.jint {
+//export Java_co_rsk_altbn128_JniBn128_pairing
+func Java_co_rsk_altbn128_JniBn128_pairing(env *C.JNIEnv, clazz C.jclass, x C.jbyteArray, len C.jint, y C.jbyteArray) C.jint {
 	cData := C.getCByteArray(env, x)
 	slice := C.GoBytes(unsafe.Pointer(cData), len)
 	defer C.releaseCByteArray(env, x, cData)
