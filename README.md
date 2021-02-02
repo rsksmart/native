@@ -6,25 +6,24 @@ In this project you'll find all the native libraries used in rskj.
 
 - altbn128
 - [secp256k1](secp256k1/README.md)
+- [bls12-381](bls12_381/README.md)
+
+
+### Compatibility
+
+| Library       | Linux         | Mac OS    | Windows (x64)  |
+| ------------- |:-------------:| :--------:| :-------:|
+| altbn128      | x             |           |          |
+| secp256k1     | x             |           |          |
+| bls12-381     | x             | x         | x        |
 
 ## Build
 
-Currently productive build will only compile for linux systems (but every build command is mac compatilble).
-Mac support for productive env will be added in future releases.
-
-### Productive
+Builds each library, runs all the tests (only for linux) and bundles `native-x.y.z.jar`
 
 ```bash
 > docker build -t native-libs .
 > docker run --rm -v $(pwd)/build:/native/build native-libs
-```
-
-### Dev
-
-Build every library and wrap them into native.jar
-
-```bash
-> ./gradlew buildProject
 ```
 
 ## Build a Specific Library
@@ -40,26 +39,29 @@ To build an specific library
 
 > ./gradlew buildSecp256k1
 
-# bls12-381 (req: cargo)
+# bls12-381 (req: rust)
 
 > ./gradlew buildBls12_381
 ```
 
 ## Checksums
 
-```
-libbn128.so: 669543be939058001ffb5ca3b816d3961f39db82dad60dfd0ffc89540956dc6f
+```bash
+# altbn128
+libbn128.so: ee41baa43b5a3927e99c2d0f826666e5baf2885ec0d689ea3c591db35ad9ae47
+
+# secp256k1
 libsecp256k1.so: 0b99909b0c86b3f4bcad90f70eef81d7b5fd77f7d29997195b3291526e5cd7f0
-libeth_pairings.so: 2a1d00f77ce59c4cede20a354cf523dd81a1bfc80a68ad0ea70322b420a88908
-native-1.2.1.jar: b1357a0619596d496d01b095ceb45819337b0ee457b9df9cef4144ed560ea715
+
+# bls12-381
+libeth_pairings.so: da214a3c3d66b057a6d3636161da977fdd8dee638a82919e86c18a6137ca0d04
+eth_pairings.dll: bb78b4dbfbf12bdb4daff1acbd682c3df9da2d7c755bc776808d634889e5d6f0
+
+native-1.3.0.jar: 58e707310e43f16e3e238469c26a777bc8ad4e3b3d0f7baf9a89ec881e53a1c5
 go1.13.5.linux-amd64.tar.gz: 512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569
 
 $ java -version
-openjdk version "1.8.0_265"
-OpenJDK Runtime Environment (build 1.8.0_265-8u265-b01-0ubuntu2~18.04-b01)
-OpenJDK 64-Bit Server VM (build 25.265-b01, mixed mode)
+openjdk version "1.8.0_275"
+OpenJDK Runtime Environment (build 1.8.0_275-8u275-b01-0ubuntu1~18.04-b01)
+OpenJDK 64-Bit Server VM (build 25.275-b01, mixed mode)
 ```
-
-## Disclaimer
-
-Experimental/dev features should only be used under your own risk.

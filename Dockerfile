@@ -1,31 +1,43 @@
 FROM ubuntu:18.04
 
-# CUSTOM VARIABLES
-ENV GOLANG=go1.13.5.linux-amd64.tar.gz
-
 # ENV VARIABLES
+ENV GOLANG=go1.13.5.linux-amd64.tar.gz
 ENV GOROOT=/usr/local/go
 ENV GOPATH=/native/altbn128
 ENV GOBIN=$GOPATH/bin
-ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV CGO_CFLAGS="-I$JAVA_HOME/include -I$JAVA_HOME/include/linux"
+ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
-RUN apt-get update && \
- apt-get -y install git && \
- apt-get -y install tree && \
- apt-get install -y -o APT::Install-Suggests="false" git curl openjdk-8-jdk build-essential=12.4ubuntu1 && \
- apt-get install -y -o APT::Install-Suggests="true" autoconf && \
- curl "https://dl.google.com/go/"$GOLANG -o $GOLANG -# && \
- echo "512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569  go1.13.5.linux-amd64.tar.gz" > goChecksum.txt && \
+# DEPENDENCIES
+
+# common
+RUN apt-get update
+RUN apt-get install -y build-essential
+RUN apt-get install -y -o APT::Install-Suggests="false" git tree curl openjdk-8-jdk
+
+# secp25k1 dependencies
+RUN apt-get install -y autoconf libtool
+
+# altbn128 dependencies
+RUN curl "https://dl.google.com/go/"$GOLANG -o $GOLANG -# && \
+ echo "512103d7ad296467814a6e3f635631bd35574cab3369a97a323c9a585ccaa569  $GOLANG" > goChecksum.txt && \
  cat goChecksum.txt && \
  sha256sum -c goChecksum.txt && \
- tar -xvf $GOLANG && mkdir -p $GOCUSTOM && mv go $GOCUSTOM
+ tar -xvf $GOLANG && \
+ mkdir -p /usr/local && \
+ mv go /usr/local
+
+# bls12-381 dependencies
 RUN curl "https://sh.rustup.rs" -sSf | bash -s -- -y
+RUN apt-get install -y clang gcc g++ zlib1g-dev libmpc-dev libmpfr-dev libgmp-dev wget cmake libxml2-dev libssl-dev gcc-mingw-w64-x86-64
+RUN git clone https://github.com/tpoechtrager/osxcross && \
+ cd osxcross && \
+ wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz&& \
+ mv MacOSX10.10.sdk.tar.xz tarballs/ && \
+ UNATTENDED=yes OSX_VERSION_MIN=10.7 ./build.sh
 
-
-#Cloning native's repo
-#RUN git clone https://github.com/rsksmart/native.git
+# Cloning native's repo
 COPY . /native
 WORKDIR /native
 
@@ -36,4 +48,3 @@ RUN cp -r jniheaders/include $JAVA_HOME
 WORKDIR /native
 ENTRYPOINT ["./gradlew"]
 CMD ["buildProject"]
-
