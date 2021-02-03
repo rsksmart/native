@@ -9,6 +9,10 @@ ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
 ENV CGO_CFLAGS="-I$JAVA_HOME/include -I$JAVA_HOME/include/linux"
 ENV PATH=$GOPATH/bin:$GOROOT/bin:$PATH
 
+# This variable makes __DATE__ & __TIME__ constant (needed for gcc deterministic compile)
+# makes eth_pairings.dll reproducible, therefore the whole project
+ENV SOURCE_DATE_EPOCH=1612383945
+
 # DEPENDENCIES
 
 # common
@@ -36,6 +40,8 @@ RUN git clone https://github.com/tpoechtrager/osxcross && \
  wget -nc https://s3.dockerproject.org/darwin/v2/MacOSX10.10.sdk.tar.xz&& \
  mv MacOSX10.10.sdk.tar.xz tarballs/ && \
  UNATTENDED=yes OSX_VERSION_MIN=10.7 ./build.sh
+
+RUN apt-get install -y vim
 
 # Cloning native's repo
 COPY . /native

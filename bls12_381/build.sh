@@ -4,6 +4,7 @@ JAVA_BLS_RESOURCES="/native/src/main/resources/co/rsk/bls12_381"
 PATH="/osxcross/target/bin:$PATH"
 PATH="$HOME/.cargo/bin:$PATH"
 
+
 # delete old build dir, if exists
 rm -rf "target/" && \
 rm -rf $JAVA_BLS_RESOURCES && \
