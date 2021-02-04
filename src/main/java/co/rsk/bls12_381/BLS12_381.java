@@ -34,43 +34,43 @@ public class BLS12_381 implements Library {
     public static final byte BLS12_MAP_FP_TO_G1_OPERATION_RAW_VALUE = 8;
     public static final byte BLS12_MAP_FP2_TO_G2_OPERATION_RAW_VALUE = 9;
 
-    public static byte[] g1Add(byte[] data) {
+    public static byte[] g1Add(byte[] data) throws BLS12_381Exception {
      return performOperation(BLS12_G1ADD_OPERATION_RAW_VALUE, data);
     }
 
-    public static byte[] g1Mul(byte[] data) {
+    public static byte[] g1Mul(byte[] data) throws BLS12_381Exception {
         return performOperation(BLS12_G1MUL_OPERATION_RAW_VALUE, data);
     }
 
-    public static byte[] g1MultiExp(byte[] data){
+    public static byte[] g1MultiExp(byte[] data) throws BLS12_381Exception {
         return performOperation(BLS12_G1MULTIEXP_OPERATION_RAW_VALUE, data);
     }
 
-    public static byte[] g2Add(byte[] data) {
+    public static byte[] g2Add(byte[] data) throws BLS12_381Exception {
         return performOperation(BLS12_G2ADD_OPERATION_RAW_VALUE, data);
     }
 
-    public static byte[] g2Mul(byte[] data) {
+    public static byte[] g2Mul(byte[] data) throws BLS12_381Exception {
         return performOperation(BLS12_G2MUL_OPERATION_RAW_VALUE, data);
     }
 
-    public static byte[] g2MultiExp(byte[] data) {
+    public static byte[] g2MultiExp(byte[] data) throws BLS12_381Exception {
         return performOperation(BLS12_G2MULTIEXP_OPERATION_RAW_VALUE, data);
     }
 
-    public static byte[] mapFpToG1(byte[] data) {
+    public static byte[] mapFpToG1(byte[] data) throws BLS12_381Exception {
         return performOperation(BLS12_MAP_FP_TO_G1_OPERATION_RAW_VALUE, data);
     }
 
-    public static byte[] mapFp2ToG2(byte[] data) {
+    public static byte[] mapFp2ToG2(byte[] data) throws BLS12_381Exception {
         return performOperation(BLS12_MAP_FP2_TO_G2_OPERATION_RAW_VALUE, data);
     }
 
-    public static byte[] pair(byte[] data) {
+    public static byte[] pair(byte[] data) throws BLS12_381Exception {
         return performOperation(BLS12_PAIR_OPERATION_RAW_VALUE, data);
     }
 
-    private static byte[] performOperation(byte operationId, byte[] data) {
+    private static byte[] performOperation(byte operationId, byte[] data) throws BLS12_381Exception {
         final byte[] result = new byte[BLS12_381.EIP2537_PREALLOCATE_FOR_RESULT_BYTES];
         final byte[] error = new byte[BLS12_381.EIP2537_PREALLOCATE_FOR_ERROR_BYTES];
 
@@ -82,10 +82,11 @@ public class BLS12_381 implements Library {
         if (errorNo == 0) {
             //we need to truncate the result array to the actual length
             return Arrays.copyOfRange(result, 0, o_len.getValue());
-        } else {
-            String reason = new String(Arrays.copyOfRange(error, 0, err_len.getValue()), StandardCharsets.UTF_8);
-            throw new BLS12FailureException(String.format("precompiled failed: {}", reason));
         }
+
+        String reason = new String(Arrays.copyOfRange(error, 0, err_len.getValue()), StandardCharsets.UTF_8);
+
+        throw new BLS12_381Exception(reason);
     }
 
     private static native int eip2537_perform_operation(
