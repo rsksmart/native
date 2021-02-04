@@ -36,7 +36,7 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.11'
     jmhCompile 'org.openjdk.jmh:jmh-core:1.22'
     jmhAnnotationProcessor 'org.openjdk.jmh:jmh-generator-annprocess:1.22'
-    implementation 'net.java.dev.jna:jna:5.6.0'
+    compile group: 'net.java.dev.jna', name:'jna', version:'5.6.0'
 }
 
 task sourcesJar(type: Jar, dependsOn: classes) {
@@ -180,5 +180,11 @@ task replaceSecp256k1JniHeaders(group: 'JNI', description: 'Replaces JNI old hea
     copy {
         from 'build/generated/jni/org_bitcoin_Secp256k1Context.h'
         into 'secp256k1/jni/'
+    }
+}
+
+jar {
+    from {
+        configurations.compileClasspath.filter{ it.exists() }.collect { it.isDirectory() ? it : zipTree(it) }
     }
 }
