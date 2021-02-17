@@ -347,7 +347,7 @@ impl<
             };
         }
 
-        let mut ell_coeffs = vec![];
+        let mut ell_coeffs = Vec::with_capacity(self.six_u_plus_2.len() * 64 * 2 + 2);
         let mut r = CurvePoint::point_from_xy(&self.curve_twist, twist_point.x.clone(), twist_point.y.clone());
 
         for i in MsbBitIterator::new(&self.six_u_plus_2).skip(1) {
@@ -392,7 +392,7 @@ impl<
             };
         }
 
-        let mut ell_coeffs = vec![];
+        let mut ell_coeffs = Vec::with_capacity(self.six_u_plus_2.len() * 64 * 2 + 2);
 
         let mut twist_point_negated = twist_point.clone();
         twist_point_negated.negate();
@@ -761,7 +761,7 @@ mod tests {
 
         let mut extension_6 = Extension3Over2::new(fp2_non_residue.clone());
         extension_6.calculate_frobenius_coeffs_optimized(&modulus).expect("must work");
-
+        
         let mut extension_12 = Extension2Over3Over2::new(Fp6::zero(&extension_6));
         extension_12.calculate_frobenius_coeffs_optimized(&modulus).expect("must work");
 
