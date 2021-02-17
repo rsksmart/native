@@ -18,8 +18,8 @@ echo "BUILD BLS12-381 LINUX" && \
 rustup target add x86_64-unknown-linux-gnu && \
 rustup toolchain install stable-x86_64-unknown-linux-gnu && \
 cargo clean && \
-cargo build --lib --features eip_2357_c_api --release --target x86_64-unknown-linux-gnu && \
 cargo test && \
+cargo build --lib --features eip_2357_c_api --release --target x86_64-unknown-linux-gnu && \
 cp target/x86_64-unknown-linux-gnu/release/libeth_pairings.so $JAVA_BLS_RESOURCES/linux &&\
 
 # clean & build bls12-381 (windows 64 bits)
