@@ -614,6 +614,7 @@ mod test {
     const WRITE_VECTORS: bool = true;
 
     #[test]
+    #[ignore]
     fn test_g1_add() {
         let mut rng = XorShiftRng::from_seed([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 
@@ -661,6 +662,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn test_g1_point_mul() {
         let mut rng = XorShiftRng::from_seed([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 
@@ -708,6 +710,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn test_g1_multiexp() {
         let mut rng = XorShiftRng::from_seed([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 
@@ -761,6 +764,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn test_g2_add() {
         let mut rng = XorShiftRng::from_seed([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 
@@ -808,6 +812,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn test_g2_point_mul() {
         let mut rng = XorShiftRng::from_seed([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 
@@ -855,6 +860,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn test_g2_multiexp() {
         let mut rng = XorShiftRng::from_seed([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 
@@ -982,6 +988,7 @@ mod test {
     // }
 
     #[test]
+    #[ignore]
     fn generate_pairing_vectors() {
         let mut rng = XorShiftRng::from_seed([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 
@@ -1046,6 +1053,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn generate_negative_test_pairing_invalid_subgroup() {
         let mut rng = XorShiftRng::from_seed([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 
@@ -1103,6 +1111,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn test_not_on_curve_g1() {
         let mut rng = XorShiftRng::from_seed([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 
@@ -1144,6 +1153,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn test_not_on_curve_g2() {
         let mut rng = XorShiftRng::from_seed([0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15]);
 
@@ -1260,6 +1270,7 @@ mod test {
     // }
 
     #[test]
+    #[ignore]
     fn dump_vectors_into_fuzzing_corpus() {
         let byte_idx: Vec<u8> = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
         let file_paths = vec![
@@ -1326,6 +1337,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn run_g1_add_on_vector() {
         let p = "src/test/test_vectors/eip2539/g1_add.csv";
         
@@ -1359,6 +1371,7 @@ mod test {
     // }
 
     #[test]
+    #[ignore]
     fn test_external_g2_multiexp_vectors() {
         let p = "src/test/test_vectors/eip2539/extras/g2_multiexp.csv";
         
@@ -1371,6 +1384,7 @@ mod test {
 
 
     #[test]
+    #[ignore]
     fn dump_extra_vectors_into_fuzzing_corpus() {
         let byte_idx: Vec<u8> = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
         let file_paths = vec![
@@ -1397,6 +1411,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn print_worst_case_vectors_eip_2539() {
         let worst_case_double_and_add_scalar_encoding = vec![255u8; SCALAR_BYTE_LENGTH];
         let e_g1 = encode_g1(&bls12_377::BLS12_377_G1_GENERATOR);

@@ -1259,6 +1259,7 @@ mod test {
     }
 
     #[test]
+    #[ignore]
     fn dump_vectors_into_fuzzing_corpus() {
         let byte_idx: Vec<u8> = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
         let file_paths = vec![
@@ -1370,6 +1371,7 @@ mod test {
 
 
     #[test]
+    #[ignore]
     fn dump_extra_vectors_into_fuzzing_corpus() {
         let byte_idx: Vec<u8> = vec![1, 2, 3, 4, 5, 6, 7, 8, 9];
         let file_paths = vec![
