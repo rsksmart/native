@@ -4,9 +4,10 @@
 rm -rf /native/src/main/resources/co/rsk/altbn128 && \
 mkdir -p /native/src/main/resources/co/rsk/altbn128/linux && \
 
-# go, clean & build
+# go, clean, test & build
 go get && \
 make clean && \
+make test && \
 make linux && \
 
 # move to resources

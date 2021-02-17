@@ -1,8 +1,11 @@
 #!/bin/bash
 
 # delete old build dir, if exists
-rm -rf "/native/src/main/resources/org/bitcoin/native/Linux/x86_64/" || true && \
+rm -rf "/native/src/main/resources/org/bitcoin/native/Linux/x86_64/" && \
 mkdir -p "/native/src/main/resources/org/bitcoin/native/Linux/x86_64/" && \
+
+# run tests
+./test.sh && \
 
 # clean & build secp256k1
 ./autogen.sh && \
