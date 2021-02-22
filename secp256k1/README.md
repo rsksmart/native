@@ -13,37 +13,14 @@ Modifications are:
 
 JNI libraries for:
 - Linux 64 bits
-- Windows 64 bits
-- Osx 64 bits
 
 ## Building
 
 Requirements 
-- Docker
 - Autoconf, Autotool & Libtool
-
-Build for each system (Linux, Mac & Windows)
 
 ```bash
 ./build.sh # Output at build/
-```
-
-Build for Linux
-
-```bash
-./build_linux.sh # Output at .libs/
-```
-
-Build for Mac
-
-```bash
-./build_mac.sh # Output at .libs/
-```
-
-Build for Windows
-
-```bash
-./build_win.sh # Output at .libs/
 ```
 
 ## Testing

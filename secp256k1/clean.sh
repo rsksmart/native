@@ -3,8 +3,6 @@
 rm -rf build/
 rm -fr jni/.deps
 rm -fr jni/.libs
-rm -f jni/org_bitcoin_NativeSecp256k1.h
-rm -f jni/org_bitcoin_Secp256k1Context.h
 
 rm -f bench_inv
 rm -f bench_ecdh
