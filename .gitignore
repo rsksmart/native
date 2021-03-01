@@ -8,4 +8,7 @@ build/
 *.gcda
 *.trs
 *.log
-src/main/resources/org/
+src/main/resources/org/bitcoin/
+src/main/resources/co/rsk
+altbn128/pkg/
+altbn128/src/
