@@ -17,42 +17,46 @@
 package org.bitcoin;
 
 /**
- * This class holds the context reference used in native methods 
+ * This class holds the context reference used in native methods
  * to handle ECDSA operations.
  */
 public class Secp256k1Context {
-  private static final boolean enabled; //true if the library is loaded
-  private static final long context; //ref to pointer to context obj
+    private static final boolean enabled; // true if the library is loaded
+    private static final long context; // ref to pointer to context obj
+    private static final Throwable loadError; // null, if library has been loaded successfully, otherwise - holds error details
 
-  static { //static initializer
-      boolean isEnabled = true;
-      long contextRef = -1;
-      try {
-          if ("The Android Project".equals(System.getProperty("java.vm.vendor"))) {
-              System.loadLibrary("co/rsk/secp256k1");
-          } else {
-              Secp256k1Loader.initialize();
-          }
-          contextRef = secp256k1_init_context();
-      } catch (UnsatisfiedLinkError e) {
-          System.out.println("Cannot load secp256k1 native library: " + e.toString());
-          isEnabled = false;
-      } catch (Exception e) {
-          System.out.println("Cannot load secp256k1 native library: " + e.toString());
-          isEnabled = false;
-      }
-      enabled = isEnabled;
-      context = contextRef;
-  }
+    static { //static initializer
+        boolean isEnabled = true;
+        long contextRef = -1;
+        Throwable error = null;
+        try {
+            if ("The Android Project".equals(System.getProperty("java.vm.vendor"))) {
+                System.loadLibrary("co/rsk/secp256k1");
+            } else {
+                Secp256k1Loader.initialize();
+            }
+            contextRef = secp256k1_init_context();
+        } catch (UnsatisfiedLinkError | Exception e) {
+            isEnabled = false;
+            error = e;
+        }
+        enabled = isEnabled;
+        context = contextRef;
+        loadError = error;
+    }
 
-  public static boolean isEnabled() {
-     return enabled;
-  }
+    public static boolean isEnabled() {
+        return enabled;
+    }
 
-  public static long getContext() {
-     if(!enabled) return -1; //sanity check
-     return context;
-  }
+    public static long getContext() {
+        if (!enabled) return -1; //sanity check
+        return context;
+    }
 
-  private static native long secp256k1_init_context();
+    public static Throwable getLoadError() {
+        return loadError;
+    }
+
+    private static native long secp256k1_init_context();
 }
