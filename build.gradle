@@ -149,6 +149,7 @@ task buildAltbn128(group: 'altbn128', description: 'builds altbn128 library with
 
 task buildSecp256k1CurrentOS(group: 'secp256k1', description: 'builds secp256k1 library for current OS (helpful for development)') {
     dependsOn 'cleanSecp256k1'
+    dependsOn 'replaceJniHeaders'
     doLast {
         exec {
             workingDir 'secp256k1'
@@ -193,6 +194,7 @@ task buildSecp256k1CurrentOS(group: 'secp256k1', description: 'builds secp256k1 
 
 task buildSecp256k1Cross(group: 'secp256k1', description: 'builds secp256k1 for Linux, Mac and Windows (only linux library supports reproducibility)') {
     dependsOn 'cleanSecp256k1'
+    dependsOn 'replaceJniHeaders'
     doLast {
         exec {
             workingDir 'secp256k1'
@@ -255,13 +257,16 @@ task generateJniHeaders(group: 'JNI', type: JavaCompile, description: 'generates
 }
 
 task replaceJniHeaders(group: 'JNI', description: 'Replaces JNI old headers with generated headers (for each library)') {
-    copy {
-        from 'build/generated/jni/org_bitcoin_NativeSecp256k1.h'
-        into 'secp256k1/jni/'
-    }
-    copy {
-        from 'build/generated/jni/org_bitcoin_Secp256k1Context.h'
-        into 'secp256k1/jni/'
+    dependsOn 'generateJniHeaders'
+    doLast {
+        copy {
+            from "${buildDir}/generated/jni/org_bitcoin_NativeSecp256k1.h"
+            into "${rootDir}/secp256k1/jni/"
+        }
+        copy {
+            from "${buildDir}/generated/jni/org_bitcoin_Secp256k1Context.h"
+            into "${rootDir}/secp256k1/jni/"
+        }
     }
 }
 
