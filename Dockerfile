@@ -34,4 +34,4 @@ RUN cp -r jniheaders/include $JAVA_HOME
 # Expose
 WORKDIR /native
 ENTRYPOINT ["./gradlew"]
-CMD ["buildProject"]
+CMD ["buildProject", "--no-daemon"]
