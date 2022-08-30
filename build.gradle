@@ -138,9 +138,14 @@ task buildAltbn128(group: 'altbn128', description: 'builds altbn128 library with
             commandLine './buildAltbn128.sh'
         }
         delete 'src/main/resources/co/rsk/altbn128/cloudflare/native/linux/libbn128.so'
+        delete 'src/main/resources/co/rsk/altbn128/cloudflare/native/linux/arm64/libbn128.so'
         copy {
             from 'altbn128/libbn128.so'
             into 'src/main/resources/co/rsk/altbn128/cloudflare/native/linux/'
+        }
+        copy {
+            from 'altbn128/libbn128.so'
+            into 'src/main/resources/co/rsk/altbn128/cloudflare/native/linux/arm64/'
         }
     }
 }

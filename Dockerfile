@@ -15,6 +15,7 @@ ENV CGO_CFLAGS="-I$JAVA_HOME/include -I$JAVA_HOME/include/linux"
 RUN apt-get update && \
  apt-get -y install git && \
  apt-get -y install tree && \
+ apt-get install -y gcc-aarch64-linux-gnu && \
  apt-get install -y -o APT::Install-Suggests="false" git curl openjdk-8-jdk build-essential=12.4ubuntu1 && \
  apt-get install -y -o APT::Install-Suggests="true" autoconf && \
  curl "https://dl.google.com/go/"$GOLANG -o $GOLANG -# && \
