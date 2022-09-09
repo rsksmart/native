@@ -20,10 +20,12 @@ public class NativeLoader {
         String nativeLibraryPath = "/co/rsk/altbn128/cloudflare/native";
         if (Utils.isWindows()) {
             nativeLibraryPath = nativeLibraryPath + "/win";
-        } else if (Utils.isLinuxAmd64()) {
-            nativeLibraryPath = nativeLibraryPath + "/linux";
-        } else if (Utils.isLinuxArm64()) {
-            nativeLibraryPath = nativeLibraryPath + "/linux/arm64";
+        } else if (Utils.isLinux()) {
+            if (Utils.isArm()) {
+                nativeLibraryPath = nativeLibraryPath + "/linux/arm64";
+            } else { // fall back to AMD
+                nativeLibraryPath = nativeLibraryPath + "/linux/amd64";
+            }
         } else if (Utils.isMac()) {
             nativeLibraryPath = nativeLibraryPath + "/macos";
         }
