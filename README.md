@@ -23,7 +23,7 @@ docker build -t native-libs .
 Then run it
 
 ```bash
-docker run --rm -v $(pwd)/build:/native/build native-libs
+docker run --rm -v $(pwd)/build:/out native-libs
 ```
 
 ### Dev

@@ -33,7 +33,9 @@ WORKDIR /native
 # Copying jni headers to java /include
 RUN cp -r jniheaders/include $JAVA_HOME
 
+RUN mkdir /out
+
 # Expose
 WORKDIR /native
-ENTRYPOINT ["./gradlew"]
-CMD ["buildProject", "--no-daemon"]
+
+CMD ./gradlew --no-daemon clean buildProject ; cp -R ./build/libs/native-* /out/
