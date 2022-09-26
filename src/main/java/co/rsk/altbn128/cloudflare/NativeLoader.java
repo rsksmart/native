@@ -21,7 +21,11 @@ public class NativeLoader {
         if (Utils.isWindows()) {
             nativeLibraryPath = nativeLibraryPath + "/win";
         } else if (Utils.isLinux()) {
-            nativeLibraryPath = nativeLibraryPath + "/linux";
+            if (Utils.isArm()) {
+                nativeLibraryPath = nativeLibraryPath + "/linux/arm64";
+            } else { // fall back to AMD
+                nativeLibraryPath = nativeLibraryPath + "/linux/amd64";
+            }
         } else if (Utils.isMac()) {
             nativeLibraryPath = nativeLibraryPath + "/macos";
         }
