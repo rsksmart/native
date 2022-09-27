@@ -3,11 +3,11 @@ import java.util.jar.JarFile
 import java.util.jar.JarOutputStream
 
 group 'co.rsk'
-version '1.3.0'
+version '1.4.0-SNAPSHOT'
 
 buildscript {
     repositories {
-        jcenter()
+        mavenCentral()
     }
 }
 
